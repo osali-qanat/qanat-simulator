@@ -306,11 +306,11 @@
             </div>
 
             <!-- Database View -->
-            <div id="view-database" class="hidden animate-fade h-full flex-col">
+            <div id="view-database" class="hidden animate-fade space-y-6">
                 
-                <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 mb-6 text-white relative overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
-                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌سازی ابری (Google Sheets)</h2>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
                     <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.</p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
@@ -323,7 +323,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-shrink-0">
                     <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۲. ذخیره محلی (آفلاین)</h2>
                     <p class="text-xs text-slate-500 mb-4 leading-relaxed">اطلاعات شما پس از هر تغییر به صورت **خودکار** روی حافظه مرورگر فعلی (همین گوشی/لپ‌تاپ) ذخیره می‌شود.</p>
                     <div class="flex gap-3">
@@ -331,7 +331,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-shrink-0">
                     <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۳. فایل پشتیبان سیستمی</h2>
                     <p class="text-xs text-slate-500 mb-4 leading-relaxed">برای اطمینان بیشتر، می‌توانید یک فایل دانلود کنید و آن را در فلش یا تلگرام خود نگه دارید و بعداً روی سیستم دیگری بارگذاری کنید.</p>
                     <div class="flex flex-col sm:flex-row gap-3">
@@ -343,7 +343,7 @@
                     </div>
                 </div>
                 
-                <div id="db-status" class="mt-6 text-center text-sm font-black h-8 transition-all"></div>
+                <div id="db-status" class="mt-6 text-center text-sm font-black h-8 transition-all flex-shrink-0"></div>
             </div>
         </div>
     </main>
@@ -441,7 +441,7 @@
             
             const target = document.getElementById(`view-${tabId}`);
             target.classList.remove('hidden');
-            if(tabId === 'analytics' || tabId === 'database') target.classList.add('flex');
+            if(tabId === 'analytics') target.classList.add('flex');
             else target.classList.add('block');
             
             if(tabId === 'dashboard') { if (chartFundCashflow) chartFundCashflow.resize(); if (chartFundPts) chartFundPts.resize(); }
