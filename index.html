@@ -86,7 +86,7 @@
             <button onclick="switchTab('analytics')" id="nav-analytics" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white">
                 <i class="fa-solid fa-microscope w-5"></i> داشبورد تحلیلی افراد
             </button>
-            <button onclick="switchTab('database')" id="nav-database" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white mt-4 border border-slate-700 text-amber-400">
+            <button onclick="switchTab('database')" id="nav-database" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white mt-4 border border-slate-700 text-emerald-400">
                 <i class="fa-solid fa-cloud w-5"></i> مدیریت فضای ابری
             </button>
         </nav>
@@ -118,6 +118,7 @@
             </div>
         </header>
 
+        <!-- Container Content -->
         <div class="flex-1 overflow-y-auto p-4 pb-32 md:p-6 md:pb-32 lg:p-8 lg:pb-32 w-full">
             
             <!-- Dashboard View -->
@@ -202,6 +203,7 @@
                 </div>
             </div>
 
+            <!-- Parameters View -->
             <div id="view-parameters" class="hidden animate-fade space-y-6">
                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 md:p-4 rounded-xl text-xs md:text-sm font-medium mb-6">
                     <i class="fa-solid fa-triangle-exclamation ml-2"></i> هشدار: با تغییر مقادیر زیر و فشردن دکمه ذخیره، تمام محاسبات صندوق از ابتدا تا انتها با فرمول‌های جدید بازنویسی و ذخیره می‌شود.
@@ -214,6 +216,7 @@
                 </div>
             </div>
 
+            <!-- Members View -->
             <div id="view-members" class="hidden animate-fade">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <h2 class="text-lg font-bold text-slate-700">مدیریت اعضا و ثبت رویدادها</h2>
@@ -224,6 +227,7 @@
                 <div id="membersContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12"></div>
             </div>
 
+            <!-- Analytics View -->
             <div id="view-analytics" class="hidden animate-fade h-full flex-col">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 justify-between items-center mb-6">
                     <div class="flex-1 min-w-[250px] w-full">
@@ -306,22 +310,16 @@
                 
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 mb-6 text-white relative overflow-hidden">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
-                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. اتصال به دیتابیس ابری (Google Sheets)</h2>
-                    <p class="text-xs text-emerald-100 mb-4 leading-relaxed relative z-10">اطلاعات شما پس از فشردن دکمه «ارسال»، به صورت امن و دائمی روی فایل اختصاصی شما در گوگل ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، اطلاعات همگام‌سازی می‌شود.</p>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌سازی ابری (Google Sheets)</h2>
+                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.</p>
                     
-                    <div class="relative z-10 flex flex-col gap-3 max-w-xl">
-                        <label class="text-[10px] font-bold text-emerald-200">آدرس وب‌اپلیکیشن اختصاصی شما (به صورت پیش‌فرض تنظیم شده است):</label>
-                        <!-- در اینجا آدرس اختصاصی شما به عنوان پیش‌فرض قرار داده شده است -->
-                        <input type="text" id="gsheetUrl" value="https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec" class="w-full border-0 rounded-lg p-2.5 text-sm font-bold text-slate-800 outline-none shadow-inner bg-emerald-50 focus:bg-white transition-colors" readonly>
-                        
-                        <div class="flex flex-wrap gap-3 mt-2">
-                            <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="bg-emerald-900 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> ارسال به فضای ابری
-                            </button>
-                            <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="bg-white hover:bg-slate-100 text-emerald-700 px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-down"></i> دریافت از فضای ابری
-                            </button>
-                        </div>
+                    <div class="relative z-10 flex flex-col sm:flex-row gap-3">
+                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-lg"></i> ارسال به فضای ابری
+                        </button>
+                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-emerald-700 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-down text-lg"></i> دریافت از فضای ابری
+                        </button>
                     </div>
                 </div>
 
@@ -329,16 +327,16 @@
                     <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۲. ذخیره محلی (آفلاین)</h2>
                     <p class="text-xs text-slate-500 mb-4 leading-relaxed">اطلاعات شما پس از هر تغییر به صورت **خودکار** روی حافظه مرورگر فعلی (همین گوشی/لپ‌تاپ) ذخیره می‌شود.</p>
                     <div class="flex gap-3">
-                        <button onclick="clearBrowserData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow-sm transition border border-red-200"><i class="fa-solid fa-trash-can ml-1"></i> پاک کردن کل اطلاعات مرورگر</button>
+                        <button onclick="clearBrowserData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl text-xs md:text-sm font-bold shadow-sm transition border border-red-200"><i class="fa-solid fa-trash-can ml-1"></i> پاک کردن کل اطلاعات مرورگر</button>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۳. فایل پشتیبان سیستمی</h2>
                     <p class="text-xs text-slate-500 mb-4 leading-relaxed">برای اطمینان بیشتر، می‌توانید یک فایل دانلود کنید و آن را در فلش یا تلگرام خود نگه دارید و بعداً روی سیستم دیگری بارگذاری کنید.</p>
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="exportToFile()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition"><i class="fa-solid fa-download ml-1"></i> دانلود فایل (Export)</button>
-                        <label class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition cursor-pointer flex items-center">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button onclick="exportToFile()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 text-white px-4 py-3 rounded-xl text-xs md:text-sm font-bold shadow transition flex items-center justify-center"><i class="fa-solid fa-download ml-1"></i> دانلود فایل (Export)</button>
+                        <label class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-xs md:text-sm font-bold shadow transition cursor-pointer flex items-center justify-center">
                             <i class="fa-solid fa-upload ml-1"></i> بارگذاری فایل (Import)
                             <input type="file" class="hidden" accept=".json" onchange="importFromFile(event)">
                         </label>
@@ -350,6 +348,7 @@
         </div>
     </main>
 
+    <!-- Modal for Events -->
     <div id="eventsModal" class="fixed inset-0 hidden flex items-center justify-center modal-overlay p-4 z-[60]">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
             <div class="p-4 md:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -407,6 +406,7 @@
             'marriage': 'ثبت ازدواج'
         };
 
+        // UI Controls
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -456,7 +456,7 @@
             }
         }
 
-        // SILENT AUTO SAVE CORE
+        // ---------------- SILENT AUTO SAVE CORE ----------------
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
@@ -469,17 +469,17 @@
         }
 
         // ---------------- GOOGLE SHEETS API LOGIC ----------------
-        async function saveToGoogleSheets() {
-            const url = document.getElementById('gsheetUrl').value.trim();
-            if(!url) { showDbMessage('آدرس گوگل شیت نامعتبر است.', 'text-amber-500'); return; }
+        // لینک اختصاصی شما در اینجا هاردکد شده است تا نیازی به ورود توسط کاربر نباشد
+        const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
+        async function saveToGoogleSheets() {
             const btn = document.getElementById('btnSaveGs');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> در حال ارتباط با ابری...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال ارسال...';
             btn.disabled = true;
 
             try {
-                const response = await fetch(url, {
+                const response = await fetch(GSHEET_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(state)
@@ -500,16 +500,13 @@
         }
 
         async function loadFromGoogleSheets() {
-            const url = document.getElementById('gsheetUrl').value.trim();
-            if(!url) { showDbMessage('آدرس گوگل شیت نامعتبر است.', 'text-amber-500'); return; }
-
             const btn = document.getElementById('btnLoadGs');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> در حال دانلود...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال دریافت...';
             btn.disabled = true;
 
             try {
-                const response = await fetch(url, { method: 'GET' });
+                const response = await fetch(GSHEET_API_URL, { method: 'GET' });
                 const result = await response.json();
                 
                 if(result.status === 'empty') {
@@ -534,6 +531,7 @@
         }
         // ---------------------------------------------------------
 
+        // ---------------- CORE SIMULATION ENGINE ----------------
         function runCoreSimulation() {
             const simMonths = state.config.months;
             const r = state.rules; 
@@ -565,6 +563,7 @@
                     let activeDelayPenalty = false;
                     let evs = member.events.filter(e => e.month == m);
                     
+                    // Repay active loans
                     activeLoansTracker.forEach(loan => {
                         if (loan.paid < loan.months) {
                             let inst = loan.amt / loan.months;
@@ -580,10 +579,10 @@
                         if(ev.type === 'custom_day') { currentDay = parseInt(ev.days) || currentDay; monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentDay}</span>`); }
                     });
 
-                    // 2. Register Debt if Missed (فاز ثبت بدهی - فقط به اندازه واحد پایه)
+                    // 2. Register Debt if Missed (ثبت بدهی معوقه)
                     if (missedFeeThisMonth) {
                         consecutiveMissedFees++;
-                        missedFeeDebt += r.baseUnit; // فقط واحد پایه اضافه می‌شود نه کل دیپازیت
+                        missedFeeDebt += r.baseUnit; 
                         monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${r.baseUnit.toLocaleString()} تومان (کف تعهد قانونی) به بدهی معوق</span>`);
                         
                         if(consecutiveMissedFees >= r.continuousMissedFeeClose) { 
@@ -597,7 +596,7 @@
                         monthLog.details.push(`<span class="text-emerald-500 text-[10px] font-bold">واریز مجدد و خروج از تعلیق</span>`);
                     }
 
-                    // 3. Process Financial Events & Debt Payment
+                    // 3. Process Financial Events & Debt Payment (پردازش تراکنش‌ها)
                     evs.forEach(ev => {
                         let amt = parseInt(ev.amount) || 0;
                         let paramDays = parseInt(ev.days) || 0;
@@ -734,6 +733,11 @@
             let configVal = parseInt(document.getElementById('globalSimMonths').value);
             if(!isNaN(configVal) && configVal > 0) state.config.months = configVal;
             runCoreSimulation(); 
+            
+            // رفع مشکل گرافیکی آپدیت چارت در صورت پنهان بودن
+            if (chartFundCashflow) chartFundCashflow.resize();
+            if (chartFundPts) chartFundPts.resize();
+            if (window.chartIndInstance) window.chartIndInstance.resize();
         }
 
         function updateGlobalUI() {
@@ -1002,12 +1006,12 @@
                 container.innerHTML += `
                     <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-200 shadow-sm relative flex flex-col">
                         <div class="flex justify-between items-start mb-4 border-b border-slate-100 pb-2">
-                            <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; runCoreSimulation();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
+                            <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; triggerAutoSave(); runCoreSimulation();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
                             <button onclick="state.members.splice(${index},1); renderMembersTab(); runCoreSimulation();" class="text-slate-300 hover:text-red-500 transition p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <div class="grid grid-cols-2 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
-                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" onchange="state.members[${index}].deposit=parseInt(this.value)||0; runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
-                            <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
+                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" onchange="state.members[${index}].deposit=parseInt(this.value)||0; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
+                            <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
                         </div>
                         <button onclick="openEventsModal(${index})" class="w-full bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-600 py-2 rounded-lg text-[10px] md:text-xs font-bold transition shadow-sm mt-auto">
                             <i class="fa-solid fa-timeline"></i> مدیریت رویدادها (<span id="eventCount_${index}">${m.events.length}</span>)
