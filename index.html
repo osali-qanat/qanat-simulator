@@ -68,7 +68,6 @@
                     <p class="text-[10px] text-slate-400 font-bold tracking-wider">شبیه‌ساز هوشمند</p>
                 </div>
             </div>
-            <!-- Close button for mobile -->
             <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -88,7 +87,7 @@
                 <i class="fa-solid fa-microscope w-5"></i> داشبورد تحلیلی افراد
             </button>
             <button onclick="switchTab('database')" id="nav-database" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white mt-4 border border-slate-700 text-amber-400">
-                <i class="fa-solid fa-hard-drive w-5"></i> مدیریت ذخیره‌سازی
+                <i class="fa-solid fa-cloud w-5"></i> مدیریت فضای ابری
             </button>
         </nav>
     </aside>
@@ -102,7 +101,6 @@
                 </button>
                 <div class="flex items-center gap-2">
                     <h1 id="pageTitle" class="text-base md:text-xl font-black text-slate-800 truncate">تحلیل کلان صندوق</h1>
-                    <!-- Auto-save indicator -->
                     <span id="autoSaveIndicator" class="text-[9px] md:text-[10px] text-emerald-500 font-bold opacity-0 transition-opacity duration-300 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
                         <i class="fa-solid fa-cloud-check"></i> ذخیره شد
                     </span>
@@ -120,8 +118,7 @@
             </div>
         </header>
 
-        <!-- فضای اسکرول با پدینگ بزرگ در پایین (pb-32) برای خروج از زیر نوارهای موبایل -->
-        <div class="flex-1 overflow-y-auto p-4 pb-32 md:p-6 md:pb-8 lg:p-8 w-full">
+        <div class="flex-1 overflow-y-auto p-4 pb-32 md:p-6 md:pb-32 lg:p-8 lg:pb-32 w-full">
             
             <!-- Dashboard View -->
             <div id="view-dashboard" class="block animate-fade space-y-6">
@@ -241,7 +238,6 @@
                 </div>
 
                 <div id="indDashboardGrid" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
-                    
                     <!-- Right Column: Status & Trajectory -->
                     <div class="lg:col-span-1 flex flex-col gap-6">
                         <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-100 shadow-sm relative overflow-hidden">
@@ -263,7 +259,7 @@
                                 <h3 class="text-[10px] md:text-[11px] font-black text-indigo-900 mb-2 flex items-center gap-1"><i class="fa-solid fa-scale-balanced"></i> محاسبه شبنم مورد نیاز</h3>
                                 <div class="flex gap-2 mb-2">
                                     <div class="flex-1">
-                                        <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">مبلغ وام درخواستی (تومان)</label>
+                                        <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">مبلغ وام (تومان)</label>
                                         <input type="number" id="calcTargetLoan" value="50000000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" oninput="runReverseCalculator()">
                                     </div>
                                     <div class="w-16">
@@ -278,7 +274,7 @@
                                 <h3 class="text-[10px] md:text-[11px] font-black text-indigo-900 mb-2 flex items-center gap-1"><i class="fa-solid fa-money-bill-transfer"></i> ظرفیت وام با شبنم فعلی</h3>
                                 <div class="flex gap-2 mb-2 items-end">
                                     <div class="flex-1">
-                                        <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">تعداد اقساط مدنظر (ماه)</label>
+                                        <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">اقساط مدنظر (ماه)</label>
                                         <input type="number" id="calcForwardMonths" value="12" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" oninput="runForwardCalculator()">
                                     </div>
                                 </div>
@@ -302,27 +298,46 @@
                             <div class="overflow-y-auto flex-1 pr-2 space-y-4" id="indLogs"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <!-- Database View -->
             <div id="view-database" class="hidden animate-fade h-full flex-col">
+                
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 mb-6 text-white relative overflow-hidden">
+                    <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. اتصال به گوگل شیت (ذخیره ابری دائمی)</h2>
+                    <p class="text-xs text-emerald-100 mb-4 leading-relaxed relative z-10">شما می‌توانید با استفاده از Google Apps Script، اطلاعات این نرم‌افزار را در لحظه به اکانت جیمیل خود متصل کنید تا حتی با تغییر مرورگر و گوشی، اطلاعات شما در فضای ابری محفوظ بماند.</p>
+                    
+                    <div class="relative z-10 flex flex-col gap-3 max-w-xl">
+                        <label class="text-[10px] font-bold text-emerald-200">آدرس وب‌اپلیکیشن گوگل (Web App URL) خود را اینجا وارد کنید:</label>
+                        <input type="text" id="gsheetUrl" placeholder="https://script.google.com/macros/s/..." class="w-full border-0 rounded-lg p-2.5 text-sm font-bold text-slate-800 outline-none shadow-inner bg-emerald-50 focus:bg-white transition-colors">
+                        
+                        <div class="flex flex-wrap gap-3 mt-2">
+                            <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="bg-emerald-900 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> ارسال به گوگل شیت
+                            </button>
+                            <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="bg-white hover:bg-slate-100 text-emerald-700 px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> دریافت از فضای ابری
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
-                    <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۱. مدیریت ابری (Auto-Save)</h2>
-                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">این سیستم هم‌اکنون به قابلیت **ذخیره خودکار** مجهز است. تمام تغییراتی که در نرم‌افزار ایجاد می‌کنید (تغییر پارامترها، افزودن کاربر، ثبت رویداد و ...) در همان لحظه به صورت خودکار در حافظه مرورگر شما ذخیره می‌شوند و هر بار که سایت را باز کنید، به صورت اتوماتیک بارگذاری خواهند شد.</p>
+                    <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۲. ذخیره محلی (آفلاین)</h2>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">اطلاعات شما پس از هر تغییر به صورت **خودکار** روی حافظه مرورگر فعلی ذخیره می‌شود. از این دکمه‌ها برای مدیریت این فضا استفاده کنید.</p>
                     <div class="flex gap-3">
-                        <button onclick="saveToBrowser(false)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition"><i class="fa-solid fa-cloud-arrow-up ml-1"></i> ذخیره دستی (اطمینان)</button>
-                        <button onclick="clearBrowserData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow-sm transition border border-red-200"><i class="fa-solid fa-trash-can ml-1"></i> پاک کردن کل اطلاعات سایت</button>
+                        <button onclick="clearBrowserData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow-sm transition border border-red-200"><i class="fa-solid fa-trash-can ml-1"></i> پاک کردن کل اطلاعات مرورگر</button>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۲. فایل پشتیبان سیستم (برای انتقال)</h2>
-                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">از آنجایی که اطلاعات در حافظه همین مرورگر است، اگر بخواهید با یک لپ‌تاپ دیگر یا گوشی شخص دیگری سایت را باز کنید، باید از اینجا یک فایل پشتیبان دانلود کنید و در دستگاه جدید آن را بارگذاری کنید.</p>
+                    <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۳. فایل پشتیبان سیستمی</h2>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">برای اطمینان بیشتر، می‌توانید یک فایل دانلود کنید و آن را در فلش یا تلگرام خود نگه دارید و بعداً روی سیستم دیگری بارگذاری کنید.</p>
                     <div class="flex flex-wrap gap-3">
-                        <button onclick="exportToFile()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition"><i class="fa-solid fa-download ml-1"></i> دانلود فایل پشتیبان (Export)</button>
-                        <label class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition cursor-pointer flex items-center">
+                        <button onclick="exportToFile()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition"><i class="fa-solid fa-download ml-1"></i> دانلود فایل (Export)</button>
+                        <label class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold shadow transition cursor-pointer flex items-center">
                             <i class="fa-solid fa-upload ml-1"></i> بارگذاری فایل (Import)
                             <input type="file" class="hidden" accept=".json" onchange="importFromFile(event)">
                         </label>
@@ -391,14 +406,12 @@
             'marriage': 'ثبت ازدواج'
         };
 
-        // UI toggles
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
             if(!sidebar || !overlay) return;
             
             const isClosed = sidebar.classList.contains('translate-x-full');
-            
             if (isClosed) {
                 sidebar.classList.remove('translate-x-full');
                 overlay.classList.remove('hidden');
@@ -413,9 +426,7 @@
         function switchTab(tabId) {
             if (window.innerWidth < 1024) {
                 const sidebar = document.getElementById('mainSidebar');
-                if (sidebar && !sidebar.classList.contains('translate-x-full')) {
-                    toggleSidebar();
-                }
+                if (sidebar && !sidebar.classList.contains('translate-x-full')) toggleSidebar();
             }
 
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
@@ -429,37 +440,110 @@
             
             const target = document.getElementById(`view-${tabId}`);
             target.classList.remove('hidden');
+            if(tabId === 'analytics' || tabId === 'database') target.classList.add('flex');
+            else target.classList.add('block');
             
-            if(tabId === 'analytics') {
-                target.classList.add('flex');
-                if (window.chartIndInstance) window.chartIndInstance.resize();
-            } else {
-                target.classList.add('block');
-            }
-            
-            if(tabId === 'dashboard') {
-                if (chartFundCashflow) chartFundCashflow.resize();
-                if (chartFundPts) chartFundPts.resize();
-            }
+            if(tabId === 'dashboard') { if (chartFundCashflow) chartFundCashflow.resize(); if (chartFundPts) chartFundPts.resize(); }
+            if(tabId === 'analytics') { if (window.chartIndInstance) window.chartIndInstance.resize(); }
 
-            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی افراد', 'database': 'مدیریت ذخیره‌سازی آفلاین' };
+            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی افراد', 'database': 'مدیریت فضای ابری و ذخیره‌سازی' };
             document.getElementById('pageTitle').innerText = titles[tabId];
             
             if(tabId === 'parameters') renderParametersForm();
             if(tabId === 'analytics') loadIndividualAnalytics();
+            
+            // بازیابی لینک گوگل شیت از حافظه در تب دیتابیس
+            if(tabId === 'database') {
+                const savedUrl = localStorage.getItem('qanat_gsheet_url');
+                if(savedUrl) document.getElementById('gsheetUrl').value = savedUrl;
+            }
         }
 
-        // AUTO SAVE CORE FUNCTION
+        // SILENT AUTO SAVE CORE
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
                 const indicator = document.getElementById('autoSaveIndicator');
                 if(indicator) {
                     indicator.classList.remove('opacity-0');
-                    setTimeout(() => indicator.classList.add('opacity-0'), 2000);
+                    setTimeout(() => indicator.classList.add('opacity-0'), 1500);
                 }
-            } catch(e) { console.error("Auto-save failed", e); }
+            } catch(e) { console.error("Auto-save failed"); }
         }
+
+        // ---------------- GOOGLE SHEETS API LOGIC ----------------
+        async function saveToGoogleSheets() {
+            const url = document.getElementById('gsheetUrl').value.trim();
+            if(!url) { showDbMessage('لطفا ابتدا آدرس وب‌اپلیکیشن گوگل (URL) را در کادر وارد کنید.', 'text-amber-500'); return; }
+            
+            // ذخیره آدرس برای دفعات بعد
+            localStorage.setItem('qanat_gsheet_url', url);
+
+            const btn = document.getElementById('btnSaveGs');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> در حال ارتباط با گوگل...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // GAS prefers text/plain for CORS
+                    body: JSON.stringify(state)
+                });
+                
+                const result = await response.json();
+                if(result.status === 'success') {
+                    showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در گوگل شیت شما ذخیره شد.', 'text-emerald-500');
+                } else {
+                    showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-red-500');
+                }
+            } catch(e) {
+                showDbMessage('ارتباط با سرور گوگل برقرار نشد. (ممکن است نیاز به VPN باشد یا لینک اشتباه است)', 'text-rose-500');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        async function loadFromGoogleSheets() {
+            const url = document.getElementById('gsheetUrl').value.trim();
+            if(!url) { showDbMessage('لطفا آدرس وب‌اپلیکیشن گوگل (URL) را وارد کنید.', 'text-amber-500'); return; }
+            
+            localStorage.setItem('qanat_gsheet_url', url);
+
+            const btn = document.getElementById('btnLoadGs');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> در حال دانلود...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(url, { method: 'GET' });
+                const result = await response.json();
+                
+                if(result.status === 'empty') {
+                    showDbMessage('فایل گوگل شیت شما خالی است. ابتدا اطلاعات را ذخیره کنید.', 'text-amber-500');
+                } else if (result.config && result.members) {
+                    // موفقیت در دریافت ساختار State
+                    state = result;
+                    document.getElementById('globalSimMonths').value = state.config.months;
+                    
+                    // ذخیره در حافظه محلی پس از دانلود موفق
+                    triggerAutoSave(); 
+                    
+                    renderMembersTab();
+                    runCoreSimulation();
+                    showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری بارگذاری و جایگزین شد.', 'text-emerald-500');
+                } else {
+                    showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-red-500');
+                }
+            } catch(e) {
+                showDbMessage('خطا در دریافت اطلاعات. بررسی کنید لینک صحیح باشد.', 'text-rose-500');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+        // ---------------------------------------------------------
 
         function runCoreSimulation() {
             let configVal = parseInt(document.getElementById('globalSimMonths').value);
@@ -472,7 +556,6 @@
             state.globalFund.cashFlow = Array(simMonths + 1).fill(0);
             state.globalFund.assetsFlow = Array(simMonths + 1).fill(0);
             state.globalFund.pointsFlow = Array(simMonths + 1).fill(0);
-
             let globalEventsByMonth = Array.from({length: simMonths + 1}, () => ({ deposits: 0, loanDisbursements: 0, loanRepayments: 0, withdrawals: 0, donations: 0 }));
 
             state.members.forEach(member => {
@@ -495,7 +578,6 @@
                     let activeDelayPenalty = false;
                     let evs = member.events.filter(e => e.month == m);
                     
-                    // Loan repayment tick
                     activeLoansTracker.forEach(loan => {
                         if (loan.paid < loan.months) {
                             let inst = loan.amt / loan.months;
@@ -505,25 +587,18 @@
                     });
 
                     // 1. Process Check for Stops
+                    let feePaymentEvent = null;
                     evs.forEach(ev => {
-                        if(ev.type === 'stop_payment') {
-                            isPaymentStopped = true; missedFeeThisMonth = true; 
-                            monthLog.details.push(`<span class="text-red-500 font-bold">توقف کامل واریز شهریه</span>`);
-                        }
-                        if(ev.type === 'resume_payment') {
-                            isPaymentStopped = false; missedFeeThisMonth = false; 
-                            monthLog.details.push(`<span class="text-emerald-500 font-bold">از سرگیری واریز شهریه</span>`);
-                        }
-                        if(ev.type === 'custom_day') {
-                            currentDay = parseInt(ev.days) || currentDay; 
-                            monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentDay}</span>`);
-                        }
+                        if(ev.type === 'stop_payment') { isPaymentStopped = true; missedFeeThisMonth = true; monthLog.details.push(`<span class="text-red-500 font-bold">توقف کامل واریز شهریه</span>`); }
+                        if(ev.type === 'resume_payment') { isPaymentStopped = false; missedFeeThisMonth = false; monthLog.details.push(`<span class="text-emerald-500 font-bold">از سرگیری واریز شهریه</span>`); }
+                        if(ev.type === 'custom_day') { currentDay = parseInt(ev.days) || currentDay; monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentDay}</span>`); }
+                        if(ev.type === 'pay_missed_fee') feePaymentEvent = ev;
                     });
 
-                    // 2. Register Debt if Missed
+                    // 2. Register Debt if Missed (فاز ثبت بدهی)
                     if (missedFeeThisMonth) {
                         consecutiveMissedFees++;
-                        missedFeeDebt += r.baseUnit;
+                        missedFeeDebt += r.baseUnit; 
                         monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${r.baseUnit.toLocaleString()} تومان (کف تعهد قانونی) به بدهی معوق</span>`);
                         
                         if(consecutiveMissedFees >= r.continuousMissedFeeClose) { 
@@ -537,15 +612,24 @@
                         monthLog.details.push(`<span class="text-emerald-500 text-[10px] font-bold">واریز مجدد و خروج از تعلیق</span>`);
                     }
 
-                    // 3. Process Financial Events (including settling debt)
+                    // 3. فاز تسویه بدهی معوق
+                    if (feePaymentEvent) {
+                        let amt = parseInt(feePaymentEvent.amount) || 0;
+                        missedFeeDebt -= amt;
+                        balance += amt; globalEventsByMonth[m].deposits += amt;
+                        if(missedFeeDebt < 0) {
+                            monthLog.details.push(`<span class="text-emerald-600 font-black">پرداخت ${amt.toLocaleString()} تومان. (تراز اعتباری: پیش‌پرداخت)</span>`);
+                        } else {
+                            monthLog.details.push(`<span class="text-emerald-600 font-black">جبران ${amt.toLocaleString()} تومان از معوقات شهریه</span>`);
+                        }
+                    }
+
+                    // 4. Process Financial Events
                     evs.forEach(ev => {
+                        if(ev.type === 'pay_missed_fee') return; // already processed
                         let amt = parseInt(ev.amount) || 0;
                         let paramDays = parseInt(ev.days) || 0;
                         switch(ev.type) {
-                            case 'pay_missed_fee':
-                                missedFeeDebt -= amt;
-                                balance += amt; globalEventsByMonth[m].deposits += amt;
-                                monthLog.details.push(`<span class="text-emerald-600 font-black">جبران ${amt.toLocaleString()} تومان از معوقات شهریه</span>`); break;
                             case 'take_loan':
                                 if (m <= 3) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: وام در ۳ ماه اول ممنوع است</span>`);
                                 else {
@@ -586,7 +670,7 @@
                         }
                     });
 
-                    // 4. Debt Penalty Execution
+                    // 5. Debt Penalty Execution (جریمه رسوب بدهی)
                     if (missedFeeDebt > 0) {
                         let debtUnits = Math.floor(missedFeeDebt / r.baseUnit);
                         if(debtUnits > 0) {
@@ -596,7 +680,7 @@
                         }
                     }
 
-                    // 5. Normal monthly points
+                    // 6. Normal monthly points
                     if (!activeDelayPenalty && !isClosed) {
                         let effectiveBal = balance - blockedBalance;
                         let balReward = Math.floor(Math.max(0, effectiveBal) / r.baseUnit) * r.minBalReward;
@@ -651,8 +735,7 @@
             state.globalFund.loansIssued = gLoansActive; state.globalFund.blockedGuarantees = gBlocked;
 
             updateGlobalUI();
-            
-            // AUTO SAVE TRIGGER
+            updateMemberLiveStats();
             triggerAutoSave();
         }
 
@@ -668,7 +751,6 @@
 
         function forceReCalculate() { 
             runCoreSimulation(); 
-            updateMemberLiveStats(); 
         }
 
         function updateGlobalUI() {
@@ -792,7 +874,6 @@
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             runCoreSimulation();
-            updateMemberLiveStats();
         }
 
         function loadIndividualAnalytics() {
@@ -938,12 +1019,12 @@
                 container.innerHTML += `
                     <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-200 shadow-sm relative flex flex-col">
                         <div class="flex justify-between items-start mb-4 border-b border-slate-100 pb-2">
-                            <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; triggerAutoSave(); populateUserDropdown(); updateGlobalUI();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
+                            <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; runCoreSimulation(); renderMembersTab();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
                             <button onclick="state.members.splice(${index},1); renderMembersTab(); runCoreSimulation();" class="text-slate-300 hover:text-red-500 transition p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <div class="grid grid-cols-2 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
-                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" onchange="state.members[${index}].deposit=parseInt(this.value)||0; runCoreSimulation(); updateMemberLiveStats();" class="!font-normal !p-1 md:!p-1.5"></div>
-                            <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; runCoreSimulation(); updateMemberLiveStats();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
+                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" onchange="state.members[${index}].deposit=parseInt(this.value)||0; runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
+                            <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
                         </div>
                         <button onclick="openEventsModal(${index})" class="w-full bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-600 py-2 rounded-lg text-[10px] md:text-xs font-bold transition shadow-sm mt-auto">
                             <i class="fa-solid fa-timeline"></i> مدیریت رویدادها (<span id="eventCount_${index}">${m.events.length}</span>)
@@ -983,29 +1064,19 @@
         function removeEvent(idx) { tempEvents.splice(idx, 1); renderEventsList(); }
         function saveEvents() { 
             state.members[currentEditIdx].events = tempEvents; 
-            const countEl = document.getElementById(`eventCount_${currentEditIdx}`);
-            if(countEl) countEl.innerText = tempEvents.length;
             closeModal('eventsModal'); 
-            forceReCalculate(); 
+            runCoreSimulation();
+            renderMembersTab();
         }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function showDbMessage(msg, colorClass) {
             const el = document.getElementById('db-status');
-            if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 4000); }
-        }
-
-        // Manual Save Button
-        function saveToBrowser(silent = false) {
-            try { 
-                localStorage.setItem('qanat_state', JSON.stringify(state)); 
-                if(!silent) showDbMessage('<i class="fa-solid fa-check"></i> اطلاعات با موفقیت به صورت دستی ذخیره شد.', 'text-emerald-600'); 
-            }
-            catch(e) { if(!silent) showDbMessage('خطا در ذخیره‌سازی!', 'text-red-600'); }
+            if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); }
         }
 
         function clearBrowserData() {
-            if(confirm("آیا از پاک کردن کامل اطلاعات مطمئن هستید؟ این کار غیرقابل بازگشت است.")) {
+            if(confirm("آیا از پاک کردن کامل اطلاعات مرورگر مطمئن هستید؟ این کار اطلاعات روی گوگل شیت را پاک نمی‌کند.")) {
                 localStorage.removeItem('qanat_state');
                 location.reload();
             }
@@ -1015,7 +1086,6 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", `Qanat_Backup_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(dl); dl.click(); dl.remove();
-            showDbMessage('<i class="fa-solid fa-download"></i> فایل پشتیبان دانلود شد.', 'text-emerald-600');
         }
 
         function importFromFile(event) {
@@ -1025,6 +1095,7 @@
                 try { 
                     state = JSON.parse(e.target.result); 
                     document.getElementById('globalSimMonths').value = state.config.months; 
+                    triggerAutoSave();
                     renderMembersTab(); 
                     runCoreSimulation(); 
                     showDbMessage('<i class="fa-solid fa-upload"></i> اطلاعات از فایل بارگذاری شد.', 'text-emerald-600'); 
@@ -1039,11 +1110,9 @@
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
             if(savedState) {
-                try {
-                    state = JSON.parse(savedState);
-                } catch(e) { console.error("Error parsing saved state."); }
+                try { state = JSON.parse(savedState); } 
+                catch(e) { console.error("Error parsing state"); }
             }
-            
             document.getElementById('globalSimMonths').value = state.config.months; 
             renderMembersTab();
             runCoreSimulation(); 
