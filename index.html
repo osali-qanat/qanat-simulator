@@ -264,7 +264,7 @@
                                 <div class="flex gap-2 mb-2">
                                     <div class="flex-1">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">مبلغ وام (تومان)</label>
-                                        <input type="number" id="calcTargetLoan" value="50000000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" oninput="runReverseCalculator()">
+                                        <input type="number" id="calcTargetLoan" value="50000000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" onchange="let b = state.rules.baseUnit; this.value = Math.max(b, Math.round((parseInt(this.value)||0)/b)*b); runReverseCalculator();" oninput="runReverseCalculator()">
                                     </div>
                                     <div class="w-16">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">اقساط</label>
