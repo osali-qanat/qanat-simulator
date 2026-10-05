@@ -118,7 +118,7 @@
             </div>
         </header>
 
-        <!-- Container Content (با Padding اضافه برای حل مشکل گیر کردن دکمه در موبایل) -->
+        <!-- Container Content -->
         <div class="flex-1 overflow-y-auto p-4 pb-32 md:p-6 md:pb-32 lg:p-8 lg:pb-32 w-full">
             
             <!-- Dashboard View -->
@@ -149,6 +149,42 @@
                         <p class="text-[10px] md:text-xs font-bold text-fuchsia-800 mb-1">سرمایه اختصاصی (بلاعوض)</p>
                         <h3 class="text-xl md:text-2xl font-black text-fuchsia-700"><span id="statFundEquity">0</span> <span class="text-xs text-fuchsia-400 font-normal">تومان</span></h3>
                         <p class="text-[9px] md:text-[10px] text-fuchsia-600 mt-2">نقدینگی دائمی (بدون بازپرداخت)</p>
+                    </div>
+                </div>
+
+                <!-- NEW: Inflow / Outflow & Projections -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+                    <!-- Inflow/Outflow summary -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-1 flex flex-col justify-center">
+                        <h4 class="text-sm font-black text-slate-800 mb-4 border-b pb-2">جریان نقدینگی در این دوره</h4>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-emerald-600 flex items-center gap-2"><i class="fa-solid fa-arrow-down"></i> مجموع ورودی‌ها:</span>
+                            <span class="text-sm font-black text-emerald-700"><span id="statTotalInflow">0</span> <span class="text-[10px] font-normal">تومان</span></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-rose-600 flex items-center gap-2"><i class="fa-solid fa-arrow-up"></i> مجموع خروجی‌ها:</span>
+                            <span class="text-sm font-black text-rose-700"><span id="statTotalOutflow">0</span> <span class="text-[10px] font-normal">تومان</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Trend and Projection -->
+                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-md col-span-1 lg:col-span-2 text-white relative overflow-hidden">
+                        <i class="fa-solid fa-chart-line absolute -left-4 -bottom-4 text-8xl opacity-10"></i>
+                        <h4 class="text-sm font-black text-emerald-400 mb-4 border-b border-slate-700 pb-2">پیش‌بینی رشد دارایی کل صندوق (بر اساس روند فعلی)</h4>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p class="text-[10px] text-slate-400 mb-1">۳ ماه آینده</p>
+                                <h5 class="text-lg font-black text-white" id="proj3m">0</h5>
+                            </div>
+                            <div class="border-x border-slate-700">
+                                <p class="text-[10px] text-slate-400 mb-1">۶ ماه آینده</p>
+                                <h5 class="text-lg font-black text-white" id="proj6m">0</h5>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 mb-1">۱۲ ماه آینده (۱ سال)</p>
+                                <h5 class="text-lg font-black text-emerald-300" id="proj12m">0</h5>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -183,10 +219,34 @@
                     </div>
                 </div>
 
+                <!-- NEW: Loan Details & User Status -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <!-- Loan List -->
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col max-h-96">
+                        <div class="p-4 border-b border-slate-100 bg-indigo-50/50 rounded-t-2xl flex justify-between items-center">
+                            <h3 class="text-sm font-black text-indigo-900"><i class="fa-solid fa-money-check-dollar"></i> پرونده تسهیلات پرداختی</h3>
+                            <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded-full"><span id="loanCount">0</span> وام در این دوره</span>
+                        </div>
+                        <div class="p-4 overflow-y-auto space-y-3" id="loanDetailsList">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+
+                    <!-- User Status / Warnings -->
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col max-h-96">
+                        <div class="p-4 border-b border-slate-100 bg-rose-50/50 rounded-t-2xl flex justify-between items-center">
+                            <h3 class="text-sm font-black text-rose-900"><i class="fa-solid fa-users-viewfinder"></i> وضعیت و هشدار اعضا</h3>
+                        </div>
+                        <div class="p-4 overflow-y-auto space-y-3" id="memberStatusList">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Macro Members Table -->
                 <div class="mt-6 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                     <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                        <h3 class="text-sm font-bold text-slate-700">خلاصه وضعیت اعضا و ظرفیت‌های بالقوه (در پایان دوره)</h3>
+                        <h3 class="text-sm font-black text-slate-700">خلاصه وضعیت اعضا و ظرفیت‌های بالقوه (در پایان دوره)</h3>
                     </div>
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-right text-xs md:text-sm min-w-[700px]">
@@ -224,7 +284,7 @@
             <!-- Members View -->
             <div id="view-members" class="hidden animate-fade">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h2 class="text-lg font-bold text-slate-700">مدیریت اعضا و رویدادها</h2>
+                    <h2 class="text-lg font-black text-slate-700">مدیریت اعضا و رویدادها</h2>
                     <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
                         <button onclick="openFundDonationsModal()" class="w-full sm:w-auto bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-hand-holding-heart"></i> کمک‌های خیّرین (خارجی)
@@ -315,7 +375,7 @@
                 </div>
             </div>
 
-            <!-- Database View (اصلاح شده با طراحی بدون لینک و ضد فشرده‌سازی در موبایل) -->
+            <!-- Database View -->
             <div id="view-database" class="hidden animate-fade space-y-6">
                 
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
@@ -326,10 +386,10 @@
                     </p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
-                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up text-lg"></i> ارسال به فضای ابری
                         </button>
-                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 bg-white hover:bg-slate-100 text-emerald-700 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-emerald-700 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-down text-lg"></i> دریافت از فضای ابری
                         </button>
                     </div>
@@ -388,7 +448,7 @@
                 <button onclick="closeModal('fundDonationsModal')" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl md:text-2xl"></i></button>
             </div>
             <div class="p-4 border-b border-slate-100 bg-fuchsia-50 text-fuchsia-800 text-[10px] md:text-xs leading-relaxed font-bold">
-                این مبالغ به عنوان «سرمایه اختصاصی صندوق» ثبت شده و متعلق به هیچ شخص خاصی نیستند. این مبالغ نیازی به بازپرداخت ندارند و صرفاً قدرت وام‌دهی و نقدینگی صندوق را بالا می‌‌برند.
+                این مبالغ به عنوان «سرمایه اختصاصی صندوق» ثبت شده و متعلق به هیچ شخص خاصی نیستند. این مبالغ نیازی به بازپرداخت ندارند و صرفاً قدرت وام‌دهی و نقدینگی صندوق را بالا می‌‌‌‌برند.
             </div>
             <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-slate-50/50">
                 <div id="fundDonationsList" class="space-y-3 mb-6"></div>
@@ -423,8 +483,8 @@
                 { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, startMonth: 1, events: [], history: null },
                 { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
             ],
-            fundDonations: [], // نگهداری کمک‌های اختصاصی و خیّرین صندوق
-            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0, totalEquity: 0 }
+            fundDonations: [], 
+            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0, totalEquity: 0, totalInflow: 0, totalOutflow: 0, issuedLoansList: [] }
         };
 
         const EVENT_TYPES = {
@@ -443,7 +503,7 @@
             'marriage': 'ثبت ازدواج'
         };
 
-        // ---------------- UI Controls ----------------
+        // UI Controls
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -493,7 +553,7 @@
             }
         }
 
-        // ---------------- SILENT AUTO SAVE CORE ----------------
+        // SILENT AUTO SAVE CORE
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
@@ -505,7 +565,7 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
-        // ---------------- GOOGLE SHEETS API LOGIC ----------------
+        // GOOGLE SHEETS API LOGIC
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -565,9 +625,8 @@
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
-        // ---------------------------------------------------------
 
-        // ---------------- CORE SIMULATION ENGINE ----------------
+        // CORE SIMULATION ENGINE
         function runCoreSimulation() {
             const simMonths = state.config.months;
             const r = state.rules; 
@@ -578,18 +637,19 @@
             state.globalFund.cashFlow = Array(simMonths + 1).fill(0);
             state.globalFund.assetsFlow = Array(simMonths + 1).fill(0);
             state.globalFund.pointsFlow = Array(simMonths + 1).fill(0);
+            state.globalFund.issuedLoansList = [];
+            
             let globalEventsByMonth = Array.from({length: simMonths + 1}, () => ({ deposits: 0, loanDisbursements: 0, loanRepayments: 0, withdrawals: 0, donations: 0 }));
 
             state.members.forEach(member => {
                 let balance = 0, ghatreh = 0, shabnam = 0, blockedBalance = 0;
                 let activeLoansTracker = []; 
                 let isClosed = false, isSuspended = false, consecutiveMissedFees = 0, isPaymentStopped = false, missedFeeDebt = 0;
-                let history = { g: [0], s: [0], b: [0], logs: [], finalLevel: null, freeBal: 0, blocked: 0, avgGrowth: 0 };
+                let history = { g: [0], s: [0], b: [0], logs: [], finalLevel: null, freeBal: 0, blocked: 0, avgGrowth: 0, status: 'active', missedDebt: 0 };
 
                 for (let m = 1; m <= simMonths; m++) {
                     let monthLog = { month: m, details: [], startG: ghatreh, startS: shabnam, gChange: 0, sChange: 0 };
                     
-                    // منطق ماه ورود کاربر به صندوق (قبل از این ماه پولی ثبت نمی‌شود)
                     let startM = member.startMonth || 1;
                     if (m < startM) {
                         monthLog.details.push(`<span class="text-slate-400 bg-slate-100 px-1 rounded text-[10px]">پیش از عضویت</span>`);
@@ -608,7 +668,6 @@
                     let activeDelayPenalty = false;
                     let evs = member.events.filter(e => e.month == m);
                     
-                    // Repay active loans
                     activeLoansTracker.forEach(loan => {
                         if (loan.paid < loan.months) {
                             let inst = loan.amt / loan.months;
@@ -617,14 +676,12 @@
                         }
                     });
 
-                    // 1. Process Check for Stops (فاز بررسی توقفات)
                     evs.forEach(ev => {
                         if(ev.type === 'stop_payment') { isPaymentStopped = true; missedFeeThisMonth = true; monthLog.details.push(`<span class="text-red-500 font-bold">توقف کامل واریز شهریه</span>`); }
                         if(ev.type === 'resume_payment') { isPaymentStopped = false; missedFeeThisMonth = false; monthLog.details.push(`<span class="text-emerald-500 font-bold">از سرگیری واریز شهریه</span>`); }
                         if(ev.type === 'custom_day') { currentDay = parseInt(ev.days) || currentDay; monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentDay}</span>`); }
                     });
 
-                    // 2. Register Debt if Missed (ثبت بدهی معوقه)
                     if (missedFeeThisMonth) {
                         consecutiveMissedFees++;
                         missedFeeDebt += r.baseUnit; 
@@ -641,7 +698,6 @@
                         monthLog.details.push(`<span class="text-emerald-500 text-[10px] font-bold">واریز مجدد و خروج از تعلیق</span>`);
                     }
 
-                    // 3. Process Financial Events & Debt Payment (پردازش تراکنش‌ها)
                     let currentDepositAmount = parseInt(member.deposit) || 0;
                     
                     evs.forEach(ev => {
@@ -670,6 +726,7 @@
                                     shabnam -= sPenalty;
                                     globalEventsByMonth[m].loanDisbursements += amt; gLoansActive += amt;
                                     activeLoansTracker.push({amt: amt, months: paramDays, paid: 0});
+                                    state.globalFund.issuedLoansList.push({ memberName: member.name, amount: amt, months: paramDays, startMonth: m });
                                     monthLog.details.push(`<span class="text-purple-600 font-bold">دریافت وام: کسر ${sPenalty} شبنم</span>`);
                                 } break;
                             case 'withdraw':
@@ -696,12 +753,11 @@
                             case 'referral': ghatreh += amt*r.referralReward; shabnam += amt*r.referralReward; monthLog.details.push(`<span class="text-emerald-600">معرفی عضو</span>`); break;
                             case 'donation': 
                                 let pts = Math.floor(amt / r.donationDivisor) * r.donationReward; ghatreh += pts; shabnam += pts; 
-                                globalEventsByMonth[m].donations += amt; monthLog.details.push(`<span class="text-emerald-600">کمک بلاعوض</span>`); break;
+                                globalEventsByMonth[m].donations += amt; monthLog.details.push(`<span class="text-emerald-600">کمک بلاعوض فردی</span>`); break;
                             case 'marriage': shabnam += r.marriageReward; monthLog.details.push(`<span class="text-pink-600">هدیه ازدواج</span>`); break;
                         }
                     });
 
-                    // 4. Debt Penalty Execution (جریمه رسوب بدهی ماهانه)
                     if (missedFeeDebt > 0) {
                         let debtUnits = Math.floor(missedFeeDebt / r.baseUnit);
                         if(debtUnits > 0) {
@@ -711,7 +767,6 @@
                         }
                     }
 
-                    // 5. Normal monthly points
                     if (!activeDelayPenalty && !isClosed) {
                         let effectiveBal = balance - blockedBalance;
                         let balReward = Math.floor(Math.max(0, effectiveBal) / r.baseUnit) * r.minBalReward;
@@ -741,10 +796,8 @@
 
                     if (!missedFeeThisMonth) { balance += currentDepositAmount; globalEventsByMonth[m].deposits += currentDepositAmount; }
 
-                    // --- قفل جلوگیری از منفی شدن امتیازات (Clamp) ---
                     if (ghatreh < 0) ghatreh = 0;
                     if (shabnam < 0) shabnam = 0;
-                    // ---------------------------------------------
 
                     monthLog.gChange = ghatreh - monthLog.startG; monthLog.sChange = shabnam - monthLog.startS;
                     history.g.push(ghatreh); history.s.push(shabnam); history.b.push(balance); history.logs.push(monthLog);
@@ -754,6 +807,8 @@
                 history.finalLevel = getLevelData(ghatreh);
                 history.freeBal = Math.max(0, balance - blockedBalance);
                 history.blocked = blockedBalance;
+                history.status = isClosed ? 'closed' : (isSuspended ? 'suspended' : (missedFeeDebt > 0 ? 'warning' : 'active'));
+                history.missedDebt = missedFeeDebt;
                 
                 let avg = 0; if (history.g.length > 3) avg = (history.g[history.g.length - 1] - history.g[history.g.length - 4]) / 3;
                 history.avgGrowth = avg;
@@ -762,18 +817,23 @@
 
             let runningCash = 0;
             let runningEquity = 0;
+            state.globalFund.totalInflow = 0;
+            state.globalFund.totalOutflow = 0;
+            
             for(let m=1; m<=simMonths; m++) {
-                // استخراج کمک‌های خیّرین (خارجی) برای ماه جاری
                 let mExtDonations = (state.fundDonations || []).filter(e => e.month == m).reduce((s, e) => s + (parseInt(e.amount)||0), 0);
                 runningEquity += mExtDonations;
 
-                // محاسبه جریان نقدینگی ماهانه (با احتساب تزریق کمک‌های خیّرین)
-                runningCash += globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments - globalEventsByMonth[m].loanDisbursements - globalEventsByMonth[m].withdrawals + mExtDonations;
+                let mInflow = globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments + mExtDonations;
+                let mOutflow = globalEventsByMonth[m].loanDisbursements + globalEventsByMonth[m].withdrawals;
+                
+                state.globalFund.totalInflow += mInflow;
+                state.globalFund.totalOutflow += mOutflow;
+
+                runningCash += mInflow - mOutflow;
                 
                 state.globalFund.cashFlow[m] = runningCash;
                 let sumBalances = state.members.reduce((sum, mem) => sum + (mem.history ? mem.history.b[m] : 0), 0);
-                
-                // دارایی کل = مجموع طلب از اعضا (وام‌ها + موجودی آزاد اعضا) + سرمایه اختصاصی صندوق (بلاعوض)
                 state.globalFund.assetsFlow[m] = sumBalances + runningEquity;
             }
 
@@ -801,7 +861,6 @@
             if(!isNaN(configVal) && configVal > 0) state.config.months = configVal;
             runCoreSimulation(); 
             
-            // رفع مشکل گرافیکی آپدیت چارت در صورت پنهان بودن
             if (chartFundCashflow) chartFundCashflow.resize();
             if (chartFundPts) chartFundPts.resize();
             if (window.chartIndInstance) window.chartIndInstance.resize();
@@ -816,8 +875,6 @@
             document.getElementById('statLiquidCash').innerText = finalCash.toLocaleString();
             document.getElementById('statActiveLoans').innerText = Math.floor(state.globalFund.loansIssued).toLocaleString();
             document.getElementById('statBlocked').innerText = state.globalFund.blockedGuarantees.toLocaleString();
-            
-            // نمایش سرمایه اختصاصی صندوق در داشبورد
             document.getElementById('statFundEquity').innerText = (state.globalFund.totalEquity || 0).toLocaleString();
             
             let ratio = finalAssets > 0 ? ((finalCash / finalAssets) * 100).toFixed(1) : 0;
@@ -859,6 +916,65 @@
             let riskClass = (risk > 100 || risk === 'بی‌نهایت') ? 'text-rose-600' : 'text-emerald-600';
             document.getElementById('macroRiskRatio').innerHTML = `<span class="${riskClass}">${risk}%</span>`;
             document.getElementById('macroMembersTable').innerHTML = tableHtml;
+
+            // Analytics / Projections
+            if (document.getElementById('statTotalInflow')) {
+                document.getElementById('statTotalInflow').innerText = state.globalFund.totalInflow.toLocaleString();
+                document.getElementById('statTotalOutflow').innerText = state.globalFund.totalOutflow.toLocaleString();
+
+                let avgMonthlyInflow = state.config.months > 0 ? (state.globalFund.totalInflow / state.config.months) : 0;
+                let avgMonthlyOutflow = state.config.months > 0 ? (state.globalFund.totalOutflow / state.config.months) : 0;
+                let netMonthlyGrowth = avgMonthlyInflow - avgMonthlyOutflow;
+                
+                document.getElementById('proj3m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 3)).toLocaleString();
+                document.getElementById('proj6m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 6)).toLocaleString();
+                document.getElementById('proj12m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 12)).toLocaleString();
+
+                let loanListHtml = '';
+                state.globalFund.issuedLoansList.forEach(l => {
+                    loanListHtml += `<div class="flex justify-between items-center text-xs p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-indigo-50 transition">
+                        <span class="font-bold text-slate-700">${l.memberName}</span>
+                        <span class="text-indigo-700 font-black">${l.amount.toLocaleString()} تومان <span class="text-[9px] text-slate-500 font-bold block sm:inline mt-1 sm:mt-0">(${l.months} ماهه - از ماه ${l.startMonth})</span></span>
+                    </div>`;
+                });
+                document.getElementById('loanCount').innerText = state.globalFund.issuedLoansList.length;
+                document.getElementById('loanDetailsList').innerHTML = loanListHtml || '<div class="text-center text-slate-400 text-xs py-8 font-bold">تسهیلاتی در این دوره پرداخت نشده است.</div>';
+
+                let statusHtml = '';
+                let activeC = 0, warningC = 0, suspendedC = 0, closedC = 0;
+                state.members.forEach(m => {
+                    let s = m.history.status;
+                    if(s === 'active') activeC++;
+                    else if(s === 'warning') {
+                        warningC++;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-amber-50 rounded-lg border border-amber-200">
+                            <span class="font-bold text-amber-900"><i class="fa-solid fa-triangle-exclamation ml-1 text-amber-500"></i>${m.name}</span>
+                            <span class="text-amber-700 text-[10px] font-black bg-amber-100 px-2 py-1 rounded">دارای بدهی (${m.history.missedDebt.toLocaleString()} تومان)</span>
+                        </div>`;
+                    } else if(s === 'suspended') {
+                        suspendedC++;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-orange-50 rounded-lg border border-orange-200">
+                            <span class="font-bold text-orange-900"><i class="fa-solid fa-lock ml-1 text-orange-500"></i>${m.name}</span>
+                            <span class="text-orange-700 text-[10px] font-black bg-orange-100 px-2 py-1 rounded">تعلیق موقت (توقف واریز)</span>
+                        </div>`;
+                    } else if(s === 'closed') {
+                        closedC++;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-red-50 rounded-lg border border-red-200">
+                            <span class="font-bold text-red-900"><i class="fa-solid fa-ban ml-1 text-red-500"></i>${m.name}</span>
+                            <span class="text-red-700 text-[10px] font-black bg-red-100 px-2 py-1 rounded">مسدود قطعی</span>
+                        </div>`;
+                    }
+                });
+                
+                let topStatsHtml = `<div class="grid grid-cols-4 gap-2 mb-4 text-center text-[10px] md:text-xs font-black">
+                    <div class="bg-emerald-100 text-emerald-800 py-2 rounded-lg border border-emerald-200 shadow-sm flex flex-col gap-1"><span class="text-emerald-500 text-lg"><i class="fa-solid fa-check-circle"></i></span>${activeC} فعال</div>
+                    <div class="bg-amber-100 text-amber-800 py-2 rounded-lg border border-amber-200 shadow-sm flex flex-col gap-1"><span class="text-amber-500 text-lg"><i class="fa-solid fa-triangle-exclamation"></i></span>${warningC} هشدار</div>
+                    <div class="bg-orange-100 text-orange-800 py-2 rounded-lg border border-orange-200 shadow-sm flex flex-col gap-1"><span class="text-orange-500 text-lg"><i class="fa-solid fa-lock"></i></span>${suspendedC} تعلیق</div>
+                    <div class="bg-red-100 text-red-800 py-2 rounded-lg border border-red-200 shadow-sm flex flex-col gap-1"><span class="text-red-500 text-lg"><i class="fa-solid fa-ban"></i></span>${closedC} مسدود</div>
+                </div>`;
+                
+                document.getElementById('memberStatusList').innerHTML = topStatsHtml + (statusHtml || '<div class="text-center text-emerald-500 font-bold text-xs py-8 mt-4"><i class="fa-solid fa-shield-check text-3xl mb-3 block opacity-50"></i>همه اعضا منظم هستند و هشداری وجود ندارد.</div>');
+            }
 
             updateGlobalCharts();
             populateUserDropdown();
@@ -931,7 +1047,6 @@
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             
-            // آپدیت کردن پرش (step) فلش‌های ماشین حساب وام بر اساس واحد پایه جدید
             const calcLoanInput = document.getElementById('calcTargetLoan');
             if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
 
@@ -1101,7 +1216,6 @@
 
         let currentEditIdx = -1, tempEvents = [];
         
-        // --- توابع مدال رویدادهای کاربران ---
         function openEventsModal(idx) {
             currentEditIdx = idx; tempEvents = JSON.parse(JSON.stringify(state.members[idx].events));
             document.getElementById('eventsModalTitle').innerText = `رویدادهای: ${state.members[idx].name}`;
@@ -1121,10 +1235,7 @@
                 let showDays = ['custom_day', 'take_loan', 'delay'].includes(ev.type);
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
                 
-                // منطق هوشمند برای تصحیح مبلغ وارد شده به مضرب‌های مجاز (Snapping)
-                // استثنائات: کمک بلاعوض (مبلغ دلخواه)، قسط معوق وام (مبلغ قسط اعشاری/خرد)، معرفی عضو (تعداد نفرات)
                 let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
-                
                 let amountInputLogic = (!isExempt && showAmt) ? 
                     `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : 
                     `updateEvent(${idx},'amount',this.value);`;
@@ -1148,7 +1259,6 @@
             renderMembersTab();
         }
 
-        // --- توابع مدال کمک‌های خیّرین (خارجی) ---
         let tempFundDonations = [];
         
         function openFundDonationsModal() {
@@ -1191,7 +1301,6 @@
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // ---------------- UTILS ----------------
         function showDbMessage(msg, colorClass) {
             const el = document.getElementById('db-status');
             if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); }
@@ -1237,7 +1346,6 @@
             }
             document.getElementById('globalSimMonths').value = state.config.months; 
             
-            // اعمال واحد پایه در شروع سیستم روی ماشین حساب
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
 
