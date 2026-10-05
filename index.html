@@ -1057,7 +1057,10 @@
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
                 
                 // منطق هوشمند برای تصحیح مبلغ وارد شده به مضرب‌های مجاز (Snapping)
-                let amountInputLogic = (ev.type !== 'referral' && showAmt) ? 
+                // استثنائات: کمک بلاعوض (مبلغ دلخواه)، قسط معوق وام (مبلغ قسط اعشاری/خرد)، معرفی عضو (تعداد نفرات)
+                let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
+                
+                let amountInputLogic = (!isExempt && showAmt) ? 
                     `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : 
                     `updateEvent(${idx},'amount',this.value);`;
 
