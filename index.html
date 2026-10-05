@@ -45,7 +45,6 @@
         }
         .param-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background-color: white; }
         
-        /* حل ریشه‌ای مشکل ارتفاع در مرورگرهای موبایل */
         @supports (-webkit-touch-callout: none) {
             html, body { height: -webkit-fill-available; }
         }
@@ -94,7 +93,7 @@
 
     <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative z-0 w-full">
         <!-- Header -->
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 md:px-6 z-10 flex-shrink-0 w-full overflow-hidden min-w-0">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 md:px-6 z-10 flex-shrink-0 w-full overflow-hidden">
             <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-600 hover:text-indigo-600 focus:outline-none p-1.5 rounded-lg bg-slate-100 flex-shrink-0">
                     <i class="fa-solid fa-bars text-lg"></i>
@@ -141,9 +140,9 @@
                         <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">سرمایه در حال بازگشت</p>
                     </div>
                     <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-red-400 relative overflow-hidden">
-                        <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">مبالغ مسدود شده (ضمانت)</p>
+                        <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">کل مبالغ مسدود (ضمانت‌ها)</p>
                         <h3 class="text-xl md:text-2xl font-black text-red-600"><span id="statBlocked">0</span> <span class="text-xs text-slate-400 font-normal">تومان</span></h3>
-                        <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">غیرقابل برداشت توسط اعضا</p>
+                        <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">مجموع ضمانت خودی + دیگران</p>
                     </div>
                     <div class="bg-fuchsia-50 p-4 rounded-2xl border border-fuchsia-100 shadow-sm border-r-4 border-r-fuchsia-500 relative overflow-hidden">
                         <p class="text-[10px] md:text-xs font-bold text-fuchsia-800 mb-1">سرمایه اختصاصی (بلاعوض)</p>
@@ -152,9 +151,8 @@
                     </div>
                 </div>
 
-                <!-- NEW: Inflow / Outflow & Projections -->
+                <!-- Inflow / Outflow & Projections -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
-                    <!-- Inflow/Outflow summary -->
                     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-1 flex flex-col justify-center">
                         <h4 class="text-sm font-black text-slate-800 mb-4 border-b pb-2">جریان نقدینگی در این دوره</h4>
                         <div class="flex justify-between items-center mb-3">
@@ -167,7 +165,6 @@
                         </div>
                     </div>
                     
-                    <!-- Trend and Projection -->
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-md col-span-1 lg:col-span-2 text-white relative overflow-hidden">
                         <i class="fa-solid fa-chart-line absolute -left-4 -bottom-4 text-8xl opacity-10"></i>
                         <h4 class="text-sm font-black text-emerald-400 mb-4 border-b border-slate-700 pb-2">پیش‌بینی رشد دارایی کل صندوق (بر اساس روند فعلی)</h4>
@@ -219,34 +216,28 @@
                     </div>
                 </div>
 
-                <!-- NEW: Loan Details & User Status -->
+                <!-- Loan Details & User Status -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                    <!-- Loan List -->
                     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col max-h-96">
                         <div class="p-4 border-b border-slate-100 bg-indigo-50/50 rounded-t-2xl flex justify-between items-center">
                             <h3 class="text-sm font-black text-indigo-900"><i class="fa-solid fa-money-check-dollar"></i> پرونده تسهیلات پرداختی</h3>
                             <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded-full"><span id="loanCount">0</span> وام در این دوره</span>
                         </div>
-                        <div class="p-4 overflow-y-auto space-y-3" id="loanDetailsList">
-                            <!-- Injected -->
-                        </div>
+                        <div class="p-4 overflow-y-auto space-y-3" id="loanDetailsList"></div>
                     </div>
 
-                    <!-- User Status / Warnings -->
                     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col max-h-96">
                         <div class="p-4 border-b border-slate-100 bg-rose-50/50 rounded-t-2xl flex justify-between items-center">
                             <h3 class="text-sm font-black text-rose-900"><i class="fa-solid fa-users-viewfinder"></i> وضعیت و هشدار اعضا</h3>
                         </div>
-                        <div class="p-4 overflow-y-auto space-y-3" id="memberStatusList">
-                            <!-- Injected -->
-                        </div>
+                        <div class="p-4 overflow-y-auto space-y-3" id="memberStatusList"></div>
                     </div>
                 </div>
 
                 <!-- Macro Members Table -->
                 <div class="mt-6 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                     <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                        <h3 class="text-sm font-black text-slate-700">خلاصه وضعیت اعضا و ظرفیت‌های بالقوه (در پایان دوره)</h3>
+                        <h3 class="text-sm font-bold text-slate-700">خلاصه وضعیت اعضا و ظرفیت‌های بالقوه (در پایان دوره)</h3>
                     </div>
                     <div class="overflow-x-auto w-full">
                         <table class="w-full text-right text-xs md:text-sm min-w-[700px]">
@@ -256,6 +247,7 @@
                                     <th class="p-3 font-bold">سطح دست‌یافته</th>
                                     <th class="p-3 font-bold text-center">قطره / شبنم</th>
                                     <th class="p-3 font-bold">موجودی آزاد</th>
+                                    <th class="p-3 font-bold text-rose-700">بدهی / کسری ضمانت</th>
                                     <th class="p-3 font-bold text-indigo-700">سقف وام (۱۲ ماهه)</th>
                                     <th class="p-3 font-bold text-center">وضعیت رشد</th>
                                 </tr>
@@ -284,7 +276,7 @@
             <!-- Members View -->
             <div id="view-members" class="hidden animate-fade">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h2 class="text-lg font-black text-slate-700">مدیریت اعضا و رویدادها</h2>
+                    <h2 class="text-lg font-bold text-slate-700">مدیریت اعضا و ثبت رویدادها</h2>
                     <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
                         <button onclick="openFundDonationsModal()" class="w-full sm:w-auto bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-hand-holding-heart"></i> کمک‌های خیّرین (خارجی)
@@ -321,8 +313,14 @@
                                 <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium">سطح کاربری:</span><span class="font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded text-sm md:text-base" id="indLvl">نامشخص</span></div>
                                 <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium">قطره (رتبه):</span><span class="font-black text-blue-600 text-base md:text-lg" id="indG">0</span></div>
                                 <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium">شبنم (تسهیلات):</span><span class="font-black text-emerald-600 text-base md:text-lg" id="indS">0</span></div>
-                                <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium">موجودی آزاد:</span><span class="font-black text-slate-800 text-sm md:text-base" id="indBal">0</span></div>
-                                <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium text-red-500">مسدودی بابت ضمانت:</span><span class="font-black text-red-600 text-sm md:text-base" id="indBlocked">0</span></div>
+                                <hr class="border-slate-100 my-1">
+                                <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium text-slate-500">کل موجودی:</span><span class="font-black text-slate-600 text-sm md:text-base" id="indTotalBal">0</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium text-amber-600">بدهی وام جاری:</span><span class="font-black text-amber-700 text-sm md:text-base" id="indDebt">0</span></div>
+                                <div class="flex justify-between items-center"><span class="text-[10px] md:text-xs font-medium text-red-500">مسدودی ضمانت خود:</span><span class="font-bold text-red-600 text-xs md:text-sm" id="indAutoBlock">0</span></div>
+                                <div class="flex justify-between items-center"><span class="text-[10px] md:text-xs font-medium text-red-500">مسدودی ضمانت دیگران:</span><span class="font-bold text-red-600 text-xs md:text-sm" id="indManualBlock">0</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs md:text-sm font-medium text-emerald-600">موجودی کاملاً آزاد:</span><span class="font-black text-emerald-700 text-sm md:text-base" id="indBal">0</span></div>
+                                
+                                <div id="indGuaranteeAlert" class="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg hidden flex-col gap-1 text-xs"></div>
                             </div>
                         </div>
 
@@ -380,10 +378,8 @@
                 
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
-                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌سازی ابری (Google Sheets)</h2>
-                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">
-                        اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.
-                    </p>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
+                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.</p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
                         <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
@@ -397,7 +393,7 @@
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex-shrink-0">
                     <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">۲. ذخیره محلی (آفلاین)</h2>
-                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">اطلاعات شما پس از هر تغییر به صورت **خودکار** روی حافظه مرورگر فعلی (همین گوشی/لپ‌تاپ) ذخیره می‌شود.</p>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">اطلاعات شما پس از هر تغییر به صورت **خودکار** روی حافظه مرورگر فعلی (همین گوشی/لپ‌‌تاپ) ذخیره می‌شود.</p>
                     <div class="flex gap-3">
                         <button onclick="clearBrowserData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl text-xs md:text-sm font-bold shadow-sm transition border border-red-200"><i class="fa-solid fa-trash-can ml-1"></i> پاک کردن کل اطلاعات مرورگر</button>
                     </div>
@@ -440,7 +436,7 @@
         </div>
     </div>
 
-    <!-- Modal for Fund Donations (کمک‌های خیّرین به خود صندوق) -->
+    <!-- Modal for Fund Donations (کمک‌های خیّرین) -->
     <div id="fundDonationsModal" class="fixed inset-0 hidden flex items-center justify-center modal-overlay p-4 z-[60]">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
             <div class="p-4 md:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -448,7 +444,7 @@
                 <button onclick="closeModal('fundDonationsModal')" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl md:text-2xl"></i></button>
             </div>
             <div class="p-4 border-b border-slate-100 bg-fuchsia-50 text-fuchsia-800 text-[10px] md:text-xs leading-relaxed font-bold">
-                این مبالغ به عنوان «سرمایه اختصاصی صندوق» ثبت شده و متعلق به هیچ شخص خاصی نیستند. این مبالغ نیازی به بازپرداخت ندارند و صرفاً قدرت وام‌دهی و نقدینگی صندوق را بالا می‌‌‌‌برند.
+                این مبالغ به عنوان «سرمایه اختصاصی صندوق» ثبت شده و متعلق به هیچ شخص خاصی نیستند. نیازی به بازپرداخت ندارند و صرفاً قدرت وام‌دهی و نقدینگی صندوق را بالا می‌برند.
             </div>
             <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-slate-50/50">
                 <div id="fundDonationsList" class="space-y-3 mb-6"></div>
@@ -483,8 +479,8 @@
                 { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, startMonth: 1, events: [], history: null },
                 { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
             ],
-            fundDonations: [], 
-            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0, totalEquity: 0, totalInflow: 0, totalOutflow: 0, issuedLoansList: [] }
+            fundDonations: [],
+            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, totalEquity: 0, totalInflow: 0, totalOutflow: 0, issuedLoansList: [] }
         };
 
         const EVENT_TYPES = {
@@ -492,14 +488,14 @@
             'custom_day': 'تغییر روز واریز پایه (در این ماه)',
             'take_loan': 'دریافت وام (مبلغ وام - تعداد اقساط)',
             'withdraw': 'برداشت از حساب (مبلغ)',
-            'guarantee': 'مسدودسازی بابت ضمانت (مبلغ)',
-            'unblock': 'آزادسازی مسدودی ضمانت (مبلغ)',
+            'guarantee': 'مسدودسازی بابت ضمانت دیگران (مبلغ)',
+            'unblock': 'آزادسازی مسدودی ضمانت دیگران (مبلغ)',
             'delay': 'قسط معوق وام (مبلغ قسط - روز تاخیر)',
             'stop_payment': 'توقف واریز شهریه (از این ماه به بعد)',
             'resume_payment': 'از سرگیری واریز شهریه',
             'pay_missed_fee': 'جبران شهریه معوقه (مبلغ پرداختی)',
             'referral': 'معرفی عضو جدید (تعداد نفرات)',
-            'donation': 'کمک بلاعوض فردی (مبلغ)',
+            'donation': 'کمک بلاعوض (مبلغ)',
             'marriage': 'ثبت ازدواج'
         };
 
@@ -580,17 +576,12 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(state)
                 });
-                
                 const result = await response.json();
-                if(result.status === 'success') {
-                    showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-500');
-                } else {
-                    showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-red-500');
-                }
+                if(result.status === 'success') showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-500');
+                else showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-red-500');
             } catch(e) {
                 showDbMessage('ارتباط با سرور ابری برقرار نشد. (ممکن است نیاز به VPN باشد)', 'text-rose-500');
             }
-            
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -611,29 +602,24 @@
                     state = result;
                     document.getElementById('globalSimMonths').value = state.config.months;
                     triggerAutoSave(); 
-                    
                     renderMembersTab();
                     runCoreSimulation();
                     showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-500');
-                } else {
-                    showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-red-500');
-                }
+                } else showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-red-500');
             } catch(e) {
                 showDbMessage('خطا در دریافت اطلاعات ابری.', 'text-rose-500');
             }
-            
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
 
-        // CORE SIMULATION ENGINE
+        // CORE SIMULATION ENGINE (With Dynamic Guarantee Algorithm)
         function runCoreSimulation() {
             const simMonths = state.config.months;
             const r = state.rules; 
             if(!state.fundDonations) state.fundDonations = [];
             
-            let gCash = 0; let gLoansActive = 0; let gBlocked = 0; 
-            
+            let gLoansActive = 0; 
             state.globalFund.cashFlow = Array(simMonths + 1).fill(0);
             state.globalFund.assetsFlow = Array(simMonths + 1).fill(0);
             state.globalFund.pointsFlow = Array(simMonths + 1).fill(0);
@@ -645,7 +631,15 @@
                 let balance = 0, ghatreh = 0, shabnam = 0, blockedBalance = 0;
                 let activeLoansTracker = []; 
                 let isClosed = false, isSuspended = false, consecutiveMissedFees = 0, isPaymentStopped = false, missedFeeDebt = 0;
-                let history = { g: [0], s: [0], b: [0], logs: [], finalLevel: null, freeBal: 0, blocked: 0, avgGrowth: 0, status: 'active', missedDebt: 0 };
+                let history = { g: [0], s: [0], b: [0], logs: [], finalLevel: null, freeBal: 0, missedDebt: 0 };
+
+                // Helper: محاسبه دینامیک موجودی آزاد، بدهی وام و مسدودی خودکار در هر لحظه
+                const getDynamicFreeBal = () => {
+                    let tempDebt = 0;
+                    activeLoansTracker.forEach(loan => { tempDebt += (loan.amt / loan.months) * (loan.months - loan.paid); });
+                    let tAuto = Math.min(Math.max(0, balance - blockedBalance), tempDebt);
+                    return { free: balance - blockedBalance - tAuto, debt: tempDebt, autoBlocked: tAuto };
+                };
 
                 for (let m = 1; m <= simMonths; m++) {
                     let monthLog = { month: m, details: [], startG: ghatreh, startS: shabnam, gChange: 0, sChange: 0 };
@@ -668,6 +662,7 @@
                     let activeDelayPenalty = false;
                     let evs = member.events.filter(e => e.month == m);
                     
+                    // قسط دهی
                     activeLoansTracker.forEach(loan => {
                         if (loan.paid < loan.months) {
                             let inst = loan.amt / loan.months;
@@ -676,6 +671,7 @@
                         }
                     });
 
+                    // چک توقف واریز
                     evs.forEach(ev => {
                         if(ev.type === 'stop_payment') { isPaymentStopped = true; missedFeeThisMonth = true; monthLog.details.push(`<span class="text-red-500 font-bold">توقف کامل واریز شهریه</span>`); }
                         if(ev.type === 'resume_payment') { isPaymentStopped = false; missedFeeThisMonth = false; monthLog.details.push(`<span class="text-emerald-500 font-bold">از سرگیری واریز شهریه</span>`); }
@@ -685,14 +681,9 @@
                     if (missedFeeThisMonth) {
                         consecutiveMissedFees++;
                         missedFeeDebt += r.baseUnit; 
-                        monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${r.baseUnit.toLocaleString()} تومان (کف تعهد قانونی) به بدهی معوق</span>`);
-                        
-                        if(consecutiveMissedFees >= r.continuousMissedFeeClose) { 
-                            isClosed = true; ghatreh=0; shabnam=0; 
-                            monthLog.details.push(`<span class="text-red-800 bg-red-200 px-1 rounded font-black">انسداد قطعی (۶ ماه معوقه متوالی)</span>`); 
-                        } else if(consecutiveMissedFees >= r.continuousMissedFeeSuspend) { 
-                            isSuspended = true; monthLog.details.push(`<span class="text-orange-700 bg-orange-200 px-1 rounded font-bold">تعلیق حساب (عدم واریز متوالی)</span>`); 
-                        }
+                        monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${r.baseUnit.toLocaleString()} تومان به بدهی معوق</span>`);
+                        if(consecutiveMissedFees >= r.continuousMissedFeeClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200 px-1 rounded font-black">انسداد قطعی</span>`); } 
+                        else if(consecutiveMissedFees >= r.continuousMissedFeeSuspend) { isSuspended = true; monthLog.details.push(`<span class="text-orange-700 bg-orange-200 px-1 rounded font-bold">تعلیق حساب</span>`); }
                     } else if (consecutiveMissedFees > 0) {
                         consecutiveMissedFees = 0; isSuspended = false; 
                         monthLog.details.push(`<span class="text-emerald-500 text-[10px] font-bold">واریز مجدد و خروج از تعلیق</span>`);
@@ -705,33 +696,23 @@
                         let paramDays = parseInt(ev.days) || 0;
                         switch(ev.type) {
                             case 'override_deposit':
-                                currentDepositAmount = amt;
-                                monthLog.details.push(`<span class="text-blue-700 font-bold bg-blue-50 px-1 rounded">واریزی اختصاصی این ماه: ${amt.toLocaleString()} تومان</span>`);
-                                break;
+                                currentDepositAmount = amt; monthLog.details.push(`<span class="text-blue-700 font-bold bg-blue-50 px-1 rounded">واریزی اختصاصی این ماه: ${amt.toLocaleString()}</span>`); break;
                             case 'pay_missed_fee':
-                                missedFeeDebt -= amt;
-                                balance += amt; globalEventsByMonth[m].deposits += amt;
-                                if(missedFeeDebt < 0) {
-                                    monthLog.details.push(`<span class="text-emerald-600 font-black">پرداخت ${amt.toLocaleString()} تومان. (تراز اعتباری: پیش‌پرداخت)</span>`);
-                                } else {
-                                    monthLog.details.push(`<span class="text-emerald-600 font-black">جبران ${amt.toLocaleString()} تومان از معوقات شهریه</span>`);
-                                }
-                                break;
+                                missedFeeDebt -= amt; balance += amt; globalEventsByMonth[m].deposits += amt; monthLog.details.push(`<span class="text-emerald-600 font-black">جبران/پرداخت ${amt.toLocaleString()} تومان بدهی</span>`); break;
                             case 'take_loan':
                                 if (m <= 3) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: وام در ۳ ماه اول ممنوع است</span>`);
                                 else {
-                                    let units = Math.floor(amt / r.baseUnit);
-                                    ghatreh -= r.loanGhatrehPenalty;
-                                    let sPenalty = units * paramDays * r.loanShabnamMultiplier;
-                                    shabnam -= sPenalty;
+                                    let units = Math.floor(amt / r.baseUnit); ghatreh -= r.loanGhatrehPenalty;
+                                    let sPenalty = units * paramDays * r.loanShabnamMultiplier; shabnam -= sPenalty;
                                     globalEventsByMonth[m].loanDisbursements += amt; gLoansActive += amt;
                                     activeLoansTracker.push({amt: amt, months: paramDays, paid: 0});
                                     state.globalFund.issuedLoansList.push({ memberName: member.name, amount: amt, months: paramDays, startMonth: m });
                                     monthLog.details.push(`<span class="text-purple-600 font-bold">دریافت وام: کسر ${sPenalty} شبنم</span>`);
+                                    monthLog.details.push(`<span class="text-indigo-600 font-bold text-[10px] bg-indigo-50 px-1 rounded">قفل دینامیک ضمانت: فعال شد</span>`);
                                 } break;
                             case 'withdraw':
-                                let freeBalForW = balance - blockedBalance;
-                                if (amt > freeBalForW) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: موجودی آزاد کافی نیست</span>`);
+                                let balInfoW = getDynamicFreeBal();
+                                if (amt > balInfoW.free) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: موجودی آزاد کافی نیست (درگیر ضمانت)</span>`);
                                 else {
                                     balance -= amt; globalEventsByMonth[m].withdrawals += amt;
                                     let units = Math.floor(amt / r.baseUnit); shabnam -= units * r.withdrawShabnamPenalty;
@@ -739,13 +720,13 @@
                                     ghatreh -= units * gPenaltyRule; monthLog.details.push(`<span class="text-orange-600 font-bold">برداشت: کسر امتیازات</span>`);
                                 } break;
                             case 'guarantee':
-                                if (amt > (balance - blockedBalance)) monthLog.details.push(`<span class="text-red-500">موجودی آزاد کافی نیست</span>`);
-                                else { blockedBalance += amt; gBlocked += amt; monthLog.details.push(`<span class="text-slate-700 bg-slate-200 px-1 rounded">مسدودی ضمانت</span>`); } break;
+                                let balInfoG = getDynamicFreeBal();
+                                if (amt > balInfoG.free) monthLog.details.push(`<span class="text-red-500 text-[10px]">موجودی آزاد کافی نیست (درگیر وام خود)</span>`);
+                                else { blockedBalance += amt; monthLog.details.push(`<span class="text-slate-700 bg-slate-200 px-1 rounded">مسدودی ضمانت دیگران</span>`); } break;
                             case 'unblock':
-                                blockedBalance -= amt; if(blockedBalance<0) blockedBalance=0; gBlocked -= amt; monthLog.details.push(`<span class="text-emerald-600">آزادسازی ضمانت</span>`); break;
+                                blockedBalance -= amt; if(blockedBalance<0) blockedBalance=0; monthLog.details.push(`<span class="text-emerald-600">آزادسازی ضمانت</span>`); break;
                             case 'delay':
-                                activeDelayPenalty = true;
-                                let unitsD = Math.floor(amt / r.baseUnit);
+                                activeDelayPenalty = true; let unitsD = Math.floor(amt / r.baseUnit);
                                 ghatreh -= unitsD * paramDays * r.delayGhatrehPenalty; shabnam -= unitsD * paramDays * r.delayShabnamPenalty;
                                 monthLog.details.push(`<span class="text-red-600 font-black">معوقه وام! کسر امتیاز</span>`);
                                 if (paramDays >= r.continuousDelayClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200">انسداد بابت معوقه حاد</span>`);}
@@ -763,62 +744,59 @@
                         if(debtUnits > 0) {
                             let penaltyG = debtUnits * 30; let penaltyS = debtUnits * 30;
                             ghatreh -= penaltyG; shabnam -= penaltyS;
-                            monthLog.details.push(`<span class="text-red-700 bg-red-50 px-1 rounded font-bold text-[10px]">جریمه رسوب معوقه (${missedFeeDebt.toLocaleString()} تومان): کسر ${penaltyG} امتیاز</span>`);
+                            monthLog.details.push(`<span class="text-red-700 bg-red-50 px-1 rounded font-bold text-[10px]">جریمه رسوب معوقه: کسر امتیاز</span>`);
                         }
                     }
 
                     if (!activeDelayPenalty && !isClosed) {
-                        let effectiveBal = balance - blockedBalance;
+                        let effectiveBal = balance - blockedBalance; // پاداش رسوب روی پولی که خودش وام گرفته اعمال میشود طبق استاندارد قرض‌الحسنه
                         let balReward = Math.floor(Math.max(0, effectiveBal) / r.baseUnit) * r.minBalReward;
                         ghatreh += balReward; shabnam += balReward;
 
                         if (isSuspended) {
-                            monthLog.details.push(`<span class="text-orange-600 text-[10px] font-bold"><i class="fa-solid fa-lock"></i> حساب معلق است (توقف رشد امتیاز استمرار)</span>`);
-                            monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب پایه: +${balReward}</span>`);
+                            monthLog.details.push(`<span class="text-orange-600 text-[10px] font-bold"><i class="fa-solid fa-lock"></i> حساب معلق است</span>`);
                         } else {
-                            if (missedFeeThisMonth) {
-                                monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب پایه: +${balReward} | (بدون امتیاز استمرار ماهانه)</span>`);
-                            } else {
+                            if (!missedFeeThisMonth) {
                                 ghatreh += (30 * r.dailyReward); shabnam += (30 * r.dailyReward);
-                                monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب پایه: +${balReward} | استمرار ماهانه: +${30 * r.dailyReward}</span>`);
-                                
-                                if (currentDay < 3) { 
-                                    let e = 3 - currentDay; ghatreh += e*r.earlyReward; shabnam += e*r.earlyReward; 
-                                    monthLog.details.push(`<span class="text-emerald-500 text-[10px]">پاداش تعجیل (${e} روز): +${(e*r.earlyReward).toFixed(1)}</span>`);
-                                }
-                                else if (currentDay > 7) { 
-                                    let l = currentDay - 7; ghatreh -= l*r.latePenalty; shabnam -= l*r.latePenalty; 
-                                    monthLog.details.push(`<span class="text-red-500 text-[10px]">جریمه تاخیر (${l} روز): -${(l*r.latePenalty).toFixed(1)}</span>`);
-                                }
+                                monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب: +${balReward} | استمرار: +${30 * r.dailyReward}</span>`);
+                                if (currentDay < 3) { let e = 3 - currentDay; ghatreh += e*r.earlyReward; shabnam += e*r.earlyReward; }
+                                else if (currentDay > 7) { let l = currentDay - 7; ghatreh -= l*r.latePenalty; shabnam -= l*r.latePenalty; }
                             }
                         }
                     }
 
                     if (!missedFeeThisMonth) { balance += currentDepositAmount; globalEventsByMonth[m].deposits += currentDepositAmount; }
 
-                    if (ghatreh < 0) ghatreh = 0;
-                    if (shabnam < 0) shabnam = 0;
+                    if (ghatreh < 0) ghatreh = 0; if (shabnam < 0) shabnam = 0;
 
                     monthLog.gChange = ghatreh - monthLog.startG; monthLog.sChange = shabnam - monthLog.startS;
                     history.g.push(ghatreh); history.s.push(shabnam); history.b.push(balance); history.logs.push(monthLog);
                     state.globalFund.pointsFlow[m] += (ghatreh + shabnam);
                 }
 
+                // محاسبه قفل دینامیک و ضمانت‌ها در پایان دوره برای نمایش
+                let finalDebt = 0;
+                activeLoansTracker.forEach(loan => { finalDebt += (loan.amt / loan.months) * (loan.months - loan.paid); });
+                let finalAutoBlocked = Math.min(Math.max(0, balance - blockedBalance), finalDebt);
+                let finalUnsecured = finalDebt - finalAutoBlocked;
+
                 history.finalLevel = getLevelData(ghatreh);
-                history.freeBal = Math.max(0, balance - blockedBalance);
-                history.blocked = blockedBalance;
-                history.status = isClosed ? 'closed' : (isSuspended ? 'suspended' : (missedFeeDebt > 0 ? 'warning' : 'active'));
+                history.freeBal = balance - blockedBalance - finalAutoBlocked;
+                history.finalDebt = finalDebt;
+                history.finalAutoBlocked = finalAutoBlocked;
+                history.finalManualBlocked = blockedBalance;
+                history.finalUnsecured = finalUnsecured;
+                history.finalCheckReq = finalUnsecured * 1.3;
                 history.missedDebt = missedFeeDebt;
+                history.status = isClosed ? 'closed' : (isSuspended ? 'suspended' : (missedFeeDebt > 0 ? 'warning' : 'active'));
                 
                 let avg = 0; if (history.g.length > 3) avg = (history.g[history.g.length - 1] - history.g[history.g.length - 4]) / 3;
                 history.avgGrowth = avg;
                 member.history = history;
             });
 
-            let runningCash = 0;
-            let runningEquity = 0;
-            state.globalFund.totalInflow = 0;
-            state.globalFund.totalOutflow = 0;
+            let runningCash = 0, runningEquity = 0;
+            state.globalFund.totalInflow = 0; state.globalFund.totalOutflow = 0;
             
             for(let m=1; m<=simMonths; m++) {
                 let mExtDonations = (state.fundDonations || []).filter(e => e.month == m).reduce((s, e) => s + (parseInt(e.amount)||0), 0);
@@ -827,9 +805,7 @@
                 let mInflow = globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments + mExtDonations;
                 let mOutflow = globalEventsByMonth[m].loanDisbursements + globalEventsByMonth[m].withdrawals;
                 
-                state.globalFund.totalInflow += mInflow;
-                state.globalFund.totalOutflow += mOutflow;
-
+                state.globalFund.totalInflow += mInflow; state.globalFund.totalOutflow += mOutflow;
                 runningCash += mInflow - mOutflow;
                 
                 state.globalFund.cashFlow[m] = runningCash;
@@ -838,7 +814,6 @@
             }
 
             state.globalFund.loansIssued = gLoansActive; 
-            state.globalFund.blockedGuarantees = gBlocked;
             state.globalFund.totalEquity = runningEquity;
 
             updateGlobalUI();
@@ -860,7 +835,6 @@
             let configVal = parseInt(document.getElementById('globalSimMonths').value);
             if(!isNaN(configVal) && configVal > 0) state.config.months = configVal;
             runCoreSimulation(); 
-            
             if (chartFundCashflow) chartFundCashflow.resize();
             if (chartFundPts) chartFundPts.resize();
             if (window.chartIndInstance) window.chartIndInstance.resize();
@@ -874,17 +848,15 @@
             document.getElementById('statTotalAssets').innerText = finalAssets.toLocaleString();
             document.getElementById('statLiquidCash').innerText = finalCash.toLocaleString();
             document.getElementById('statActiveLoans').innerText = Math.floor(state.globalFund.loansIssued).toLocaleString();
-            document.getElementById('statBlocked').innerText = state.globalFund.blockedGuarantees.toLocaleString();
             document.getElementById('statFundEquity').innerText = (state.globalFund.totalEquity || 0).toLocaleString();
             
-            let ratio = finalAssets > 0 ? ((finalCash / finalAssets) * 100).toFixed(1) : 0;
-            document.getElementById('statLiquidRatio').innerText = `${ratio}% از کل دارایی نقد است`;
-
-            let totalDemand = 0, totalShabnam = 0, tableHtml = '';
+            let totalManual = 0, totalAuto = 0, totalDemand = 0, totalShabnam = 0, tableHtml = '';
             const r = state.rules;
 
             state.members.forEach(m => {
                 let h = m.history; if(!h) return;
+                totalManual += h.finalManualBlocked; totalAuto += h.finalAutoBlocked;
+                
                 let lastS = h.s[h.s.length-1]; let lastG = h.g[h.g.length-1];
                 totalShabnam += lastS;
                 
@@ -898,23 +870,29 @@
                 totalDemand += finalMaxLoan;
                 let growthTrend = h.avgGrowth > 0 ? `<i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>` : (h.avgGrowth < 0 ? `<i class="fa-solid fa-arrow-trend-down text-red-500"></i>` : `<i class="fa-solid fa-minus text-slate-300"></i>`);
 
+                let debtInfo = h.finalDebt > 0 
+                    ? `<div class="text-rose-600 font-black">${h.finalDebt.toLocaleString()}</div><div class="text-[9px] text-slate-500 mt-0.5">کسری: ${h.finalUnsecured.toLocaleString()}</div>` 
+                    : `<span class="text-slate-300">-</span>`;
+
                 tableHtml += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-50 last:border-0">
                         <td class="p-3 font-bold text-slate-700 whitespace-nowrap">${m.name}</td>
                         <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] md:text-xs font-black">${h.finalLevel.name}</span></td>
                         <td class="p-3 text-[10px] md:text-xs font-bold text-center"><span class="text-blue-600">${lastG.toFixed(0)}</span> / <span class="text-emerald-600">${lastS.toFixed(0)}</span></td>
                         <td class="p-3 font-medium text-xs md:text-sm whitespace-nowrap">${h.freeBal.toLocaleString()}</td>
+                        <td class="p-3 text-xs md:text-sm whitespace-nowrap">${debtInfo}</td>
                         <td class="p-3 font-black text-indigo-700 text-xs md:text-sm whitespace-nowrap">${finalMaxLoan.toLocaleString()}</td>
                         <td class="p-3 text-center">${growthTrend}</td>
                     </tr>
                 `;
             });
 
+            document.getElementById('statBlocked').innerText = (totalManual + totalAuto).toLocaleString();
+            document.getElementById('statLiquidRatio').innerText = `${finalAssets > 0 ? ((finalCash / finalAssets) * 100).toFixed(1) : 0}% از کل دارایی نقد است`;
             document.getElementById('macroPotentialDemand').innerText = totalDemand.toLocaleString();
             document.getElementById('macroTotalShabnam').innerText = totalShabnam.toLocaleString();
             let risk = finalCash > 0 ? ((totalDemand / finalCash) * 100).toFixed(1) : (totalDemand > 0 ? 'بی‌نهایت' : '0');
-            let riskClass = (risk > 100 || risk === 'بی‌نهایت') ? 'text-rose-600' : 'text-emerald-600';
-            document.getElementById('macroRiskRatio').innerHTML = `<span class="${riskClass}">${risk}%</span>`;
+            document.getElementById('macroRiskRatio').innerHTML = `<span class="${(risk > 100 || risk === 'بی‌نهایت') ? 'text-rose-600' : 'text-emerald-600'}">${risk}%</span>`;
             document.getElementById('macroMembersTable').innerHTML = tableHtml;
 
             // Analytics / Projections
@@ -922,10 +900,7 @@
                 document.getElementById('statTotalInflow').innerText = state.globalFund.totalInflow.toLocaleString();
                 document.getElementById('statTotalOutflow').innerText = state.globalFund.totalOutflow.toLocaleString();
 
-                let avgMonthlyInflow = state.config.months > 0 ? (state.globalFund.totalInflow / state.config.months) : 0;
-                let avgMonthlyOutflow = state.config.months > 0 ? (state.globalFund.totalOutflow / state.config.months) : 0;
-                let netMonthlyGrowth = avgMonthlyInflow - avgMonthlyOutflow;
-                
+                let netMonthlyGrowth = (state.config.months > 0) ? ((state.globalFund.totalInflow - state.globalFund.totalOutflow) / state.config.months) : 0;
                 document.getElementById('proj3m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 3)).toLocaleString();
                 document.getElementById('proj6m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 6)).toLocaleString();
                 document.getElementById('proj12m').innerText = Math.max(0, finalAssets + (netMonthlyGrowth * 12)).toLocaleString();
@@ -940,29 +915,19 @@
                 document.getElementById('loanCount').innerText = state.globalFund.issuedLoansList.length;
                 document.getElementById('loanDetailsList').innerHTML = loanListHtml || '<div class="text-center text-slate-400 text-xs py-8 font-bold">تسهیلاتی در این دوره پرداخت نشده است.</div>';
 
-                let statusHtml = '';
-                let activeC = 0, warningC = 0, suspendedC = 0, closedC = 0;
+                let statusHtml = '', activeC = 0, warningC = 0, suspendedC = 0, closedC = 0;
                 state.members.forEach(m => {
                     let s = m.history.status;
                     if(s === 'active') activeC++;
                     else if(s === 'warning') {
                         warningC++;
-                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-amber-50 rounded-lg border border-amber-200">
-                            <span class="font-bold text-amber-900"><i class="fa-solid fa-triangle-exclamation ml-1 text-amber-500"></i>${m.name}</span>
-                            <span class="text-amber-700 text-[10px] font-black bg-amber-100 px-2 py-1 rounded">دارای بدهی (${m.history.missedDebt.toLocaleString()} تومان)</span>
-                        </div>`;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-amber-50 rounded-lg border border-amber-200"><span class="font-bold text-amber-900"><i class="fa-solid fa-triangle-exclamation ml-1 text-amber-500"></i>${m.name}</span><span class="text-amber-700 text-[10px] font-black bg-amber-100 px-2 py-1 rounded">دارای بدهی (${m.history.missedDebt.toLocaleString()} تومان)</span></div>`;
                     } else if(s === 'suspended') {
                         suspendedC++;
-                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-orange-50 rounded-lg border border-orange-200">
-                            <span class="font-bold text-orange-900"><i class="fa-solid fa-lock ml-1 text-orange-500"></i>${m.name}</span>
-                            <span class="text-orange-700 text-[10px] font-black bg-orange-100 px-2 py-1 rounded">تعلیق موقت (توقف واریز)</span>
-                        </div>`;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-orange-50 rounded-lg border border-orange-200"><span class="font-bold text-orange-900"><i class="fa-solid fa-lock ml-1 text-orange-500"></i>${m.name}</span><span class="text-orange-700 text-[10px] font-black bg-orange-100 px-2 py-1 rounded">تعلیق موقت (توقف واریز)</span></div>`;
                     } else if(s === 'closed') {
                         closedC++;
-                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-red-50 rounded-lg border border-red-200">
-                            <span class="font-bold text-red-900"><i class="fa-solid fa-ban ml-1 text-red-500"></i>${m.name}</span>
-                            <span class="text-red-700 text-[10px] font-black bg-red-100 px-2 py-1 rounded">مسدود قطعی</span>
-                        </div>`;
+                        statusHtml += `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs p-3 bg-red-50 rounded-lg border border-red-200"><span class="font-bold text-red-900"><i class="fa-solid fa-ban ml-1 text-red-500"></i>${m.name}</span><span class="text-red-700 text-[10px] font-black bg-red-100 px-2 py-1 rounded">مسدود قطعی</span></div>`;
                     }
                 });
                 
@@ -972,8 +937,7 @@
                     <div class="bg-orange-100 text-orange-800 py-2 rounded-lg border border-orange-200 shadow-sm flex flex-col gap-1"><span class="text-orange-500 text-lg"><i class="fa-solid fa-lock"></i></span>${suspendedC} تعلیق</div>
                     <div class="bg-red-100 text-red-800 py-2 rounded-lg border border-red-200 shadow-sm flex flex-col gap-1"><span class="text-red-500 text-lg"><i class="fa-solid fa-ban"></i></span>${closedC} مسدود</div>
                 </div>`;
-                
-                document.getElementById('memberStatusList').innerHTML = topStatsHtml + (statusHtml || '<div class="text-center text-emerald-500 font-bold text-xs py-8 mt-4"><i class="fa-solid fa-shield-check text-3xl mb-3 block opacity-50"></i>همه اعضا منظم هستند و هشداری وجود ندارد.</div>');
+                document.getElementById('memberStatusList').innerHTML = topStatsHtml + (statusHtml || '<div class="text-center text-emerald-500 font-bold text-xs py-8 mt-4"><i class="fa-solid fa-shield-check text-3xl mb-3 block opacity-50"></i>همه اعضا منظم هستند.</div>');
             }
 
             updateGlobalCharts();
@@ -1028,28 +992,19 @@
                 </div>
             `).join('');
             html += `<div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2"><h3 class="text-xs md:text-sm font-black text-slate-800 mb-4 border-b pb-2">تنظیمات مرز سطوح کاربری، ضرایب و سقف وام</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${levelsHtml}</div></div>`;
-            
             container.innerHTML = html;
         }
 
         function saveRulesAndRecalculate() {
-            Object.keys(state.rules).forEach(k => {
-                const el = document.getElementById(`param_${k}`);
-                if(el) state.rules[k] = parseFloat(el.value) || 0;
-            });
+            Object.keys(state.rules).forEach(k => { const el = document.getElementById(`param_${k}`); if(el) state.rules[k] = parseFloat(el.value) || 0; });
             state.levels.forEach((lvl, idx) => {
-                const minGEl = document.getElementById(`lvl_${idx}_minG`);
-                const multEl = document.getElementById(`lvl_${idx}_mult`);
-                const capEl = document.getElementById(`lvl_${idx}_cap`);
-                if(minGEl) lvl.minG = parseInt(minGEl.value) || 0;
-                if(multEl) lvl.mult = parseFloat(multEl.value) || 0;
-                if(capEl) lvl.cap = parseInt(capEl.value) || 0;
+                const minGEl = document.getElementById(`lvl_${idx}_minG`); const multEl = document.getElementById(`lvl_${idx}_mult`); const capEl = document.getElementById(`lvl_${idx}_cap`);
+                if(minGEl) lvl.minG = parseInt(minGEl.value) || 0; if(multEl) lvl.mult = parseFloat(multEl.value) || 0; if(capEl) lvl.cap = parseInt(capEl.value) || 0;
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             
             const calcLoanInput = document.getElementById('calcTargetLoan');
             if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
-
             runCoreSimulation();
         }
 
@@ -1067,8 +1022,30 @@
             document.getElementById('indLvl').innerText = h.finalLevel.name;
             document.getElementById('indG').innerText = h.g[h.g.length-1].toFixed(1);
             document.getElementById('indS').innerText = h.s[h.s.length-1].toFixed(1);
+            
+            document.getElementById('indTotalBal').innerText = h.b[h.b.length-1].toLocaleString();
+            document.getElementById('indDebt').innerText = h.finalDebt.toLocaleString();
+            document.getElementById('indAutoBlock').innerText = h.finalAutoBlocked.toLocaleString();
+            document.getElementById('indManualBlock').innerText = h.finalManualBlocked.toLocaleString();
             document.getElementById('indBal').innerText = h.freeBal.toLocaleString();
-            document.getElementById('indBlocked').innerText = h.blocked.toLocaleString();
+
+            const gAlert = document.getElementById('indGuaranteeAlert');
+            if (h.finalDebt > 0) {
+                gAlert.classList.remove('hidden'); gAlert.classList.add('flex');
+                if (h.finalUnsecured > 0) {
+                    gAlert.innerHTML = `
+                        <div class="font-bold text-indigo-900 mb-1"><i class="fa-solid fa-shield-halved"></i> وضعیت پوشش ضمانت وام:</div>
+                        <div class="flex justify-between text-[10px]"><span class="text-slate-600">تامین شده از حساب خود:</span><span class="font-black text-emerald-600">${h.finalAutoBlocked.toLocaleString()}</span></div>
+                        <div class="flex justify-between text-[10px]"><span class="text-slate-600">کسری ضمانت (نیاز به تامین):</span><span class="font-black text-rose-600">${h.finalUnsecured.toLocaleString()}</span></div>
+                        <div class="border-t border-indigo-100 pt-2 mt-1 text-[10px] text-indigo-800 leading-relaxed font-bold">
+                            راهکار: بلوکه کردن ${h.finalUnsecured.toLocaleString()} از حساب یک ضامن<br>یا دریافت سفته/چک به مبلغ ${h.finalCheckReq.toLocaleString()} (ضریب 1.3)
+                        </div>`;
+                } else {
+                    gAlert.innerHTML = `
+                        <div class="font-bold text-emerald-800"><i class="fa-solid fa-shield-check"></i> ضمانت کامل است</div>
+                        <div class="text-[10px] text-emerald-700 leading-relaxed mt-1">موجودی حساب شخص، کل بدهی وام را پوشش می‌دهد و نیازی به ضامن خارجی یا چک نیست.</div>`;
+                }
+            } else { gAlert.classList.add('hidden'); gAlert.classList.remove('flex'); }
 
             const logsContainer = document.getElementById('indLogs'); logsContainer.innerHTML = '';
             [...h.logs].reverse().forEach(log => {
@@ -1086,8 +1063,7 @@
                             </div>
                         </div>
                         <div class="text-[10px] md:text-xs leading-relaxed text-slate-600">${detailsHTML}</div>
-                    </div>
-                `;
+                    </div>`;
             });
 
             const ctx = document.getElementById('chartInd');
@@ -1098,7 +1074,6 @@
                 data: { labels: labels, datasets: [ { label: 'قطره', data: h.g, borderColor: '#3b82f6', tension: 0.3 }, { label: 'شبنم', data: h.s, borderColor: '#10b981', borderDash: [5, 5], tension: 0.3 } ] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {font: {family: 'Vazirmatn'}, boxWidth: 10, padding: 5} } }, scales: {x:{ticks:{font:{size:9}}}, y:{ticks:{font:{size:9}}}} }
             });
-
             runReverseCalculator(); runForwardCalculator();
         }
 
@@ -1117,16 +1092,14 @@
             
             let issues = [];
             if(reqShabnam > currentShabnam) issues.push(`نیاز به ${reqShabnam.toLocaleString()} شبنم دارید (${currentShabnam.toFixed(0)} موجود است).`);
-            if(targetAmt > maxCapBal) issues.push(`سقف ضریب موجودی شما ${maxCapBal.toLocaleString()} است.`);
+            if(targetAmt > maxCapBal) issues.push(`سقف ضریب موجودی آزاد شما ${maxCapBal.toLocaleString()} است.`);
             if(targetAmt > maxCapLevel) issues.push(`حداکثر وام مجاز در سطح شما ${maxCapLevel.toLocaleString()} است.`);
             
             let resContainer = document.getElementById('calcResults');
             if(issues.length === 0) {
-                resContainer.innerHTML = `<div class="text-emerald-700 font-bold mb-1"><i class="fa-solid fa-circle-check"></i> امکان‌پذیر است</div>
-                                          <div class="flex justify-between"><span>شبنم مصرفی:</span><span class="font-black">${reqShabnam.toLocaleString()}</span></div>`;
+                resContainer.innerHTML = `<div class="text-emerald-700 font-bold mb-1"><i class="fa-solid fa-circle-check"></i> امکان‌پذیر است</div><div class="flex justify-between"><span>شبنم مصرفی:</span><span class="font-black">${reqShabnam.toLocaleString()}</span></div>`;
             } else {
-                resContainer.innerHTML = `<div class="text-red-600 font-bold mb-1"><i class="fa-solid fa-triangle-exclamation"></i> امکان‌پذیر نیست:</div>
-                                          <ul class="list-disc pl-4 text-red-700 text-[10px]">${issues.map(i => `<li>${i}</li>`).join('')}</ul>`;
+                resContainer.innerHTML = `<div class="text-red-600 font-bold mb-1"><i class="fa-solid fa-triangle-exclamation"></i> امکان‌پذیر نیست:</div><ul class="list-disc pl-4 text-red-700 text-[10px]">${issues.map(i => `<li>${i}</li>`).join('')}</ul>`;
             }
         }
 
@@ -1155,21 +1128,14 @@
         let chartFundCashflow = null, chartFundPts = null;
         function updateGlobalCharts() {
             const labels = Array.from({length: state.config.months + 1}, (_, i) => i === 0 ? 'M0' : `M${i}`);
-            
             if (chartFundCashflow) chartFundCashflow.destroy();
             chartFundCashflow = new Chart(document.getElementById('chartFundCashflow').getContext('2d'), {
-                type: 'line',
-                data: { labels: labels, datasets: [
-                    { label: 'دارایی کل', data: state.globalFund.assetsFlow, borderColor: '#6366f1', borderWidth: 2, tension: 0.2 },
-                    { label: 'نقدینگی آزاد', data: state.globalFund.cashFlow, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)', borderWidth: 2, fill: true, tension: 0.2 }
-                ]},
+                type: 'line', data: { labels: labels, datasets: [ { label: 'دارایی کل', data: state.globalFund.assetsFlow, borderColor: '#6366f1', borderWidth: 2, tension: 0.2 }, { label: 'نقدینگی آزاد', data: state.globalFund.cashFlow, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)', borderWidth: 2, fill: true, tension: 0.2 } ]},
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {font: {family: 'Vazirmatn'}, boxWidth: 10} } }, scales: {x:{ticks:{font:{size:9}}}, y:{ticks:{font:{size:9}}}} }
             });
-
             if (chartFundPts) chartFundPts.destroy();
             chartFundPts = new Chart(document.getElementById('chartFundPoints').getContext('2d'), {
-                type: 'bar',
-                data: { labels: labels, datasets: [{ label: 'مجموع امتیازات', data: state.globalFund.pointsFlow, backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                type: 'bar', data: { labels: labels, datasets: [{ label: 'مجموع امتیازات', data: state.globalFund.pointsFlow, backgroundColor: '#3b82f6', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {font: {family: 'Vazirmatn'}, boxWidth: 10} } }, scales: {x:{ticks:{font:{size:9}}}, y:{ticks:{font:{size:9}}}} }
             });
         }
@@ -1215,16 +1181,13 @@
         function addMember() { state.members.push({ id: Date.now(), name: "عضو جدید", deposit: state.rules.baseUnit, day: 5, startMonth: 1, events: [], history: null }); runCoreSimulation(); renderMembersTab(); }
 
         let currentEditIdx = -1, tempEvents = [];
-        
         function openEventsModal(idx) {
             currentEditIdx = idx; tempEvents = JSON.parse(JSON.stringify(state.members[idx].events));
             document.getElementById('eventsModalTitle').innerText = `رویدادهای: ${state.members[idx].name}`;
             renderEventsList(); document.getElementById('eventsModal').classList.remove('hidden');
         }
 
-        function updateEvent(idx, field, value) {
-            tempEvents[idx][field] = value;
-        }
+        function updateEvent(idx, field, value) { tempEvents[idx][field] = value; }
 
         function renderEventsList() {
             const container = document.getElementById('eventsList'); container.innerHTML = '';
@@ -1236,9 +1199,7 @@
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
                 
                 let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
-                let amountInputLogic = (!isExempt && showAmt) ? 
-                    `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : 
-                    `updateEvent(${idx},'amount',this.value);`;
+                let amountInputLogic = (!isExempt && showAmt) ? `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : `updateEvent(${idx},'amount',this.value);`;
 
                 container.innerHTML += `
                     <div class="flex flex-wrap md:flex-nowrap items-end gap-2 bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-2">
@@ -1252,33 +1213,18 @@
         }
         function addEventRow() { tempEvents.push({ month: 1, type: 'take_loan', amount: state.rules.baseUnit * 10, days: 10 }); renderEventsList(); }
         function removeEvent(idx) { tempEvents.splice(idx, 1); renderEventsList(); }
-        function saveEvents() { 
-            state.members[currentEditIdx].events = tempEvents; 
-            closeModal('eventsModal'); 
-            runCoreSimulation();
-            renderMembersTab();
-        }
+        function saveEvents() { state.members[currentEditIdx].events = tempEvents; closeModal('eventsModal'); runCoreSimulation(); renderMembersTab(); }
 
         let tempFundDonations = [];
-        
         function openFundDonationsModal() {
             if(!state.fundDonations) state.fundDonations = [];
             tempFundDonations = JSON.parse(JSON.stringify(state.fundDonations));
-            renderFundDonationsList();
-            document.getElementById('fundDonationsModal').classList.remove('hidden');
+            renderFundDonationsList(); document.getElementById('fundDonationsModal').classList.remove('hidden');
         }
-
-        function updateFundDonation(idx, field, value) {
-            tempFundDonations[idx][field] = value;
-        }
-
+        function updateFundDonation(idx, field, value) { tempFundDonations[idx][field] = value; }
         function renderFundDonationsList() {
-            const container = document.getElementById('fundDonationsList');
-            container.innerHTML = '';
-            if(tempFundDonations.length === 0) {
-                container.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs md:text-sm font-bold">هیچ کمک اختصاصی ثبت نشده است.</div>';
-                return;
-            }
+            const container = document.getElementById('fundDonationsList'); container.innerHTML = '';
+            if(tempFundDonations.length === 0) { container.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs md:text-sm font-bold">هیچ کمک اختصاصی ثبت نشده است.</div>'; return; }
             tempFundDonations.sort((a,b) => a.month - b.month).forEach((ev, idx) => {
                 container.innerHTML += `
                     <div class="flex flex-wrap md:flex-nowrap items-end gap-2 bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-2">
@@ -1289,68 +1235,36 @@
                     </div>`;
             });
         }
-        
         function addFundDonationRow() { tempFundDonations.push({ month: 1, amount: 1000000, desc: '' }); renderFundDonationsList(); }
         function removeFundDonation(idx) { tempFundDonations.splice(idx, 1); renderFundDonationsList(); }
-        function saveFundDonations() { 
-            state.fundDonations = tempFundDonations; 
-            closeModal('fundDonationsModal'); 
-            triggerAutoSave();
-            runCoreSimulation();
-        }
+        function saveFundDonations() { state.fundDonations = tempFundDonations; closeModal('fundDonationsModal'); triggerAutoSave(); runCoreSimulation(); }
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function showDbMessage(msg, colorClass) {
-            const el = document.getElementById('db-status');
-            if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); }
-        }
+        function showDbMessage(msg, colorClass) { const el = document.getElementById('db-status'); if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); } }
 
         function clearBrowserData() {
-            if(confirm("آیا از پاک کردن کامل اطلاعات مرورگر مطمئن هستید؟ این کار اطلاعات روی گوگل شیت را پاک نمی‌کند.")) {
-                localStorage.removeItem('qanat_state');
-                location.reload();
-            }
+            if(confirm("آیا از پاک کردن کامل اطلاعات مرورگر مطمئن هستید؟ این کار اطلاعات روی گوگل شیت را پاک نمی‌کند.")) { localStorage.removeItem('qanat_state'); location.reload(); }
         }
-
         function exportToFile() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-            const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", `Qanat_Backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dl); dl.click(); dl.remove();
+            const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", `Qanat_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(dl); dl.click(); dl.remove();
         }
-
         function importFromFile(event) {
             const file = event.target.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                try { 
-                    state = JSON.parse(e.target.result); 
-                    document.getElementById('globalSimMonths').value = state.config.months; 
-                    triggerAutoSave();
-                    renderMembersTab(); 
-                    runCoreSimulation(); 
-                    showDbMessage('<i class="fa-solid fa-upload"></i> اطلاعات از فایل بارگذاری شد.', 'text-emerald-600'); 
-                }
-                catch (err) { showDbMessage('فایل نامعتبر است!', 'text-red-600'); }
-                event.target.value = ''; 
-            };
-            reader.readAsText(file);
+                try { state = JSON.parse(e.target.result); document.getElementById('globalSimMonths').value = state.config.months; triggerAutoSave(); renderMembersTab(); runCoreSimulation(); showDbMessage('<i class="fa-solid fa-upload"></i> اطلاعات از فایل بارگذاری شد.', 'text-emerald-600'); }
+                catch (err) { showDbMessage('فایل نامعتبر است!', 'text-red-600'); } event.target.value = ''; 
+            }; reader.readAsText(file);
         }
 
-        // AUTO-LOAD on Startup
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
-            if(savedState) {
-                try { state = JSON.parse(savedState); } 
-                catch(e) { console.error("Error parsing state"); }
-            }
+            if(savedState) { try { state = JSON.parse(savedState); } catch(e) { console.error("Error parsing state"); } }
             document.getElementById('globalSimMonths').value = state.config.months; 
-            
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
-
-            renderMembersTab();
-            runCoreSimulation(); 
+            renderMembersTab(); runCoreSimulation(); 
         };
     </script>
 </body>
