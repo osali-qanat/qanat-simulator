@@ -264,7 +264,7 @@
                                 <div class="flex gap-2 mb-2">
                                     <div class="flex-1">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">مبلغ وام (تومان)</label>
-                                        <input type="number" id="calcTargetLoan" value="50000000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" onchange="let b = state.rules.baseUnit; this.value = Math.max(b, Math.round((parseInt(this.value)||0)/b)*b); runReverseCalculator();" oninput="runReverseCalculator()">
+                                        <input type="number" id="calcTargetLoan" value="50000000" step="200000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" onchange="let b = state.rules.baseUnit; this.value = Math.max(b, Math.round((parseInt(this.value)||0)/b)*b); runReverseCalculator();" oninput="runReverseCalculator()">
                                     </div>
                                     <div class="w-16">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">اقساط</label>
@@ -867,6 +867,11 @@
                 if(capEl) lvl.cap = parseInt(capEl.value) || 0;
             });
             state.levels.sort((a, b) => a.minG - b.minG);
+            
+            // آپدیت کردن پرش (step) فلش‌های ماشین حساب وام بر اساس واحد پایه جدید
+            const calcLoanInput = document.getElementById('calcTargetLoan');
+            if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
+
             runCoreSimulation();
         }
 
@@ -1017,7 +1022,7 @@
                             <button onclick="state.members.splice(${index},1); renderMembersTab(); runCoreSimulation();" class="text-slate-300 hover:text-red-500 transition p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <div class="grid grid-cols-2 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
-                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" onchange="state.members[${index}].deposit=parseInt(this.value)||0; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
+                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" step="${state.rules.baseUnit}" onchange="let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.max(b, Math.round(v/b)*b); this.value = v; state.members[${index}].deposit=v; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
                             <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
                         </div>
                         <button onclick="openEventsModal(${index})" class="w-full bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-600 py-2 rounded-lg text-[10px] md:text-xs font-bold transition shadow-sm mt-auto">
@@ -1036,6 +1041,12 @@
             document.getElementById('eventsModalTitle').innerText = `رویدادهای: ${state.members[idx].name}`;
             renderEventsList(); document.getElementById('eventsModal').classList.remove('hidden');
         }
+
+        // تابع آپدیت مقادیر درون فرم که جا افتاده بود
+        function updateEvent(idx, field, value) {
+            tempEvents[idx][field] = value;
+        }
+
         function renderEventsList() {
             const container = document.getElementById('eventsList'); container.innerHTML = '';
             if(tempEvents.length === 0) { container.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs md:text-sm font-bold">هیچ رویدادی ثبت نشده است.</div>'; return; }
@@ -1044,11 +1055,17 @@
                 let showAmt = !['custom_day', 'stop_payment', 'resume_payment', 'marriage'].includes(ev.type);
                 let showDays = ['custom_day', 'take_loan', 'delay'].includes(ev.type);
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
+                
+                // منطق هوشمند برای تصحیح مبلغ وارد شده به مضرب‌های مجاز (Snapping)
+                let amountInputLogic = (ev.type !== 'referral' && showAmt) ? 
+                    `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : 
+                    `updateEvent(${idx},'amount',this.value);`;
+
                 container.innerHTML += `
                     <div class="flex flex-wrap md:flex-nowrap items-end gap-2 bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-2">
                         <div class="w-12"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">ماه</label><input type="number" class="w-full border rounded p-1 md:p-1.5 text-xs font-black text-center outline-none focus:border-indigo-500" value="${ev.month}" onchange="updateEvent(${idx},'month',this.value)"></div>
-                        <div class="flex-1 min-w-[150px]"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">نوع</label><select class="w-full border rounded p-1 md:p-1.5 text-[10px] md:text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'type',this.value)">${typeOpts}</select></div>
-                        ${showAmt ? `<div class="w-24 flex-1 md:flex-none"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">مبلغ/تعداد</label><input type="number" value="${ev.amount}" step="${stepVal}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'amount',this.value)"></div>` : ''}
+                        <div class="flex-1 min-w-[150px]"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">نوع</label><select class="w-full border rounded p-1 md:p-1.5 text-[10px] md:text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'type',this.value); renderEventsList();">${typeOpts}</select></div>
+                        ${showAmt ? `<div class="w-24 flex-1 md:flex-none"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">مبلغ/تعداد</label><input type="number" value="${ev.amount}" step="${stepVal}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-indigo-500" onchange="${amountInputLogic}"></div>` : ''}
                         ${showDays ? `<div class="w-16 flex-1 md:flex-none"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">روز/قسط</label><input type="number" value="${ev.days}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'days',this.value)"></div>` : ''}
                         <button onclick="removeEvent(${idx})" class="text-red-400 hover:text-red-600 transition p-2 bg-red-50 rounded-lg"><i class="fa-solid fa-trash"></i></button>
                     </div>`;
@@ -1108,6 +1125,11 @@
                 catch(e) { console.error("Error parsing state"); }
             }
             document.getElementById('globalSimMonths').value = state.config.months; 
+            
+            // اعمال واحد پایه در شروع سیستم روی ماشین حساب
+            const calcTargetLoan = document.getElementById('calcTargetLoan');
+            if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
+
             renderMembersTab();
             runCoreSimulation(); 
         };
