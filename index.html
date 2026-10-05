@@ -385,8 +385,8 @@
                 { minG: 4500, name: "قنات", mult: 4, cap: 200000000 }
             ],
             members: [
-                { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, events: [], history: null },
-                { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
+                { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, startMonth: 1, events: [], history: null },
+                { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
             ],
             globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0 }
         };
@@ -407,7 +407,6 @@
             'marriage': 'ثبت ازدواج'
         };
 
-        // UI Controls
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -457,7 +456,6 @@
             }
         }
 
-        // ---------------- SILENT AUTO SAVE CORE ----------------
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
@@ -469,8 +467,6 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
-        // ---------------- GOOGLE SHEETS API LOGIC ----------------
-        // لینک اختصاصی شما در اینجا هاردکد شده است تا نیازی به ورود توسط کاربر نباشد
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -530,9 +526,7 @@
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
-        // ---------------------------------------------------------
 
-        // ---------------- CORE SIMULATION ENGINE ----------------
         function runCoreSimulation() {
             const simMonths = state.config.months;
             const r = state.rules; 
@@ -553,6 +547,14 @@
                 for (let m = 1; m <= simMonths; m++) {
                     let monthLog = { month: m, details: [], startG: ghatreh, startS: shabnam, gChange: 0, sChange: 0 };
                     
+                    // بررسی ماه ورود کاربر
+                    let startM = member.startMonth || 1;
+                    if (m < startM) {
+                        monthLog.details.push(`<span class="text-slate-400 bg-slate-100 px-1 rounded text-[10px]">پیش از عضویت</span>`);
+                        history.g.push(0); history.s.push(0); history.b.push(0); history.logs.push(monthLog);
+                        continue;
+                    }
+
                     if (isClosed) {
                         monthLog.details.push(`<span class="text-red-600 font-bold bg-red-100 px-1 rounded">مسدود قطعی.</span>`);
                         history.g.push(0); history.s.push(0); history.b.push(balance); history.logs.push(monthLog);
@@ -745,7 +747,6 @@
             if(!isNaN(configVal) && configVal > 0) state.config.months = configVal;
             runCoreSimulation(); 
             
-            // رفع مشکل گرافیکی آپدیت چارت در صورت پنهان بودن
             if (chartFundCashflow) chartFundCashflow.resize();
             if (chartFundPts) chartFundPts.resize();
             if (window.chartIndInstance) window.chartIndInstance.resize();
@@ -872,7 +873,6 @@
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             
-            // آپدیت کردن پرش (step) فلش‌های ماشین حساب وام بر اساس واحد پایه جدید
             const calcLoanInput = document.getElementById('calcTargetLoan');
             if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
 
@@ -1025,9 +1025,10 @@
                             <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; triggerAutoSave(); runCoreSimulation();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
                             <button onclick="state.members.splice(${index},1); renderMembersTab(); runCoreSimulation();" class="text-slate-300 hover:text-red-500 transition p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
+                        <div class="grid grid-cols-3 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
                             <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" step="${state.rules.baseUnit}" onchange="let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.max(b, Math.round(v/b)*b); this.value = v; state.members[${index}].deposit=v; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
                             <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
+                            <div class="param-group"><label>ماه ورود</label><input type="number" value="${m.startMonth || 1}" onchange="state.members[${index}].startMonth=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="120"></div>
                         </div>
                         <button onclick="openEventsModal(${index})" class="w-full bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-600 py-2 rounded-lg text-[10px] md:text-xs font-bold transition shadow-sm mt-auto">
                             <i class="fa-solid fa-timeline"></i> مدیریت رویدادها (<span id="eventCount_${index}">${m.events.length}</span>)
@@ -1037,7 +1038,7 @@
             });
         }
 
-        function addMember() { state.members.push({ id: Date.now(), name: "عضو جدید", deposit: state.rules.baseUnit, day: 5, events: [], history: null }); runCoreSimulation(); renderMembersTab(); }
+        function addMember() { state.members.push({ id: Date.now(), name: "عضو جدید", deposit: state.rules.baseUnit, day: 5, startMonth: 1, events: [], history: null }); runCoreSimulation(); renderMembersTab(); }
 
         let currentEditIdx = -1, tempEvents = [];
         function openEventsModal(idx) {
@@ -1046,7 +1047,6 @@
             renderEventsList(); document.getElementById('eventsModal').classList.remove('hidden');
         }
 
-        // تابع آپدیت مقادیر درون فرم که جا افتاده بود
         function updateEvent(idx, field, value) {
             tempEvents[idx][field] = value;
         }
@@ -1060,8 +1060,6 @@
                 let showDays = ['custom_day', 'take_loan', 'delay'].includes(ev.type);
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
                 
-                // منطق هوشمند برای تصحیح مبلغ وارد شده به مضرب‌های مجاز (Snapping)
-                // استثنائات: کمک بلاعوض (مبلغ دلخواه)، قسط معوق وام (مبلغ قسط اعشاری/خرد)، معرفی عضو (تعداد نفرات)
                 let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
                 
                 let amountInputLogic = (!isExempt && showAmt) ? 
@@ -1078,6 +1076,7 @@
                     </div>`;
             });
         }
+        
         function addEventRow() { tempEvents.push({ month: 1, type: 'take_loan', amount: state.rules.baseUnit * 10, days: 10 }); renderEventsList(); }
         function removeEvent(idx) { tempEvents.splice(idx, 1); renderEventsList(); }
         function saveEvents() { 
@@ -1124,7 +1123,6 @@
             reader.readAsText(file);
         }
 
-        // AUTO-LOAD on Startup
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
             if(savedState) {
@@ -1133,7 +1131,6 @@
             }
             document.getElementById('globalSimMonths').value = state.config.months; 
             
-            // اعمال واحد پایه در شروع سیستم روی ماشین حساب
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
 
