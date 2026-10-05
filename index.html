@@ -94,7 +94,7 @@
 
     <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative z-0 w-full">
         <!-- Header -->
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 md:px-6 z-10 flex-shrink-0 w-full overflow-hidden">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 md:px-6 z-10 flex-shrink-0 w-full overflow-hidden min-w-0">
             <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-600 hover:text-indigo-600 focus:outline-none p-1.5 rounded-lg bg-slate-100 flex-shrink-0">
                     <i class="fa-solid fa-bars text-lg"></i>
@@ -118,32 +118,37 @@
             </div>
         </header>
 
-        <!-- Container Content -->
+        <!-- Container Content (با Padding اضافه برای حل مشکل گیر کردن دکمه در موبایل) -->
         <div class="flex-1 overflow-y-auto p-4 pb-32 md:p-6 md:pb-32 lg:p-8 lg:pb-32 w-full">
             
             <!-- Dashboard View -->
             <div id="view-dashboard" class="block animate-fade space-y-6">
                 <!-- Advanced Stats Row -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-indigo-500 relative overflow-hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-indigo-500 relative overflow-hidden">
                         <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">دارایی کل صندوق (Assets)</p>
                         <h3 class="text-xl md:text-2xl font-black text-indigo-900"><span id="statTotalAssets">0</span> <span class="text-xs text-slate-400 font-normal">تومان</span></h3>
-                        <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">مجموع نقدینگی + وام‌های در دست مردم</p>
+                        <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">نقدینگی + وام‌ها + سرمایه ثابت</p>
                     </div>
-                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-emerald-500 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-emerald-500 relative overflow-hidden">
                         <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">نقدینگی در دسترس صندوق</p>
                         <h3 class="text-xl md:text-2xl font-black text-emerald-700"><span id="statLiquidCash">0</span> <span class="text-xs text-slate-400 font-normal">تومان</span></h3>
                         <p class="text-[9px] md:text-[10px] text-emerald-600/70 mt-2 font-bold" id="statLiquidRatio">0% از کل دارایی</p>
                     </div>
-                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-amber-500 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-amber-500 relative overflow-hidden">
                         <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">تسهیلات جاری (Loans)</p>
                         <h3 class="text-xl md:text-2xl font-black text-amber-700"><span id="statActiveLoans">0</span> <span class="text-xs text-slate-400 font-normal">تومان</span></h3>
                         <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">سرمایه در حال بازگشت</p>
                     </div>
-                    <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-red-400 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm border-r-4 border-r-red-400 relative overflow-hidden">
                         <p class="text-[10px] md:text-xs font-bold text-slate-500 mb-1">مبالغ مسدود شده (ضمانت)</p>
                         <h3 class="text-xl md:text-2xl font-black text-red-600"><span id="statBlocked">0</span> <span class="text-xs text-slate-400 font-normal">تومان</span></h3>
                         <p class="text-[9px] md:text-[10px] text-slate-400 mt-2">غیرقابل برداشت توسط اعضا</p>
+                    </div>
+                    <div class="bg-fuchsia-50 p-4 rounded-2xl border border-fuchsia-100 shadow-sm border-r-4 border-r-fuchsia-500 relative overflow-hidden">
+                        <p class="text-[10px] md:text-xs font-bold text-fuchsia-800 mb-1">سرمایه اختصاصی (بلاعوض)</p>
+                        <h3 class="text-xl md:text-2xl font-black text-fuchsia-700"><span id="statFundEquity">0</span> <span class="text-xs text-fuchsia-400 font-normal">تومان</span></h3>
+                        <p class="text-[9px] md:text-[10px] text-fuchsia-600 mt-2">نقدینگی دائمی (بدون بازپرداخت)</p>
                     </div>
                 </div>
 
@@ -219,10 +224,15 @@
             <!-- Members View -->
             <div id="view-members" class="hidden animate-fade">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h2 class="text-lg font-bold text-slate-700">مدیریت اعضا و ثبت رویدادها</h2>
-                    <button onclick="addMember()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-user-plus"></i> ثبت عضو جدید
-                    </button>
+                    <h2 class="text-lg font-bold text-slate-700">مدیریت اعضا و رویدادها</h2>
+                    <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                        <button onclick="openFundDonationsModal()" class="w-full sm:w-auto bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hand-holding-heart"></i> کمک‌های خیّرین (خارجی)
+                        </button>
+                        <button onclick="addMember()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-user-plus"></i> ثبت عضو جدید
+                        </button>
+                    </div>
                 </div>
                 <div id="membersContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12"></div>
             </div>
@@ -305,19 +315,21 @@
                 </div>
             </div>
 
-            <!-- Database View -->
+            <!-- Database View (اصلاح شده با طراحی بدون لینک و ضد فشرده‌سازی در موبایل) -->
             <div id="view-database" class="hidden animate-fade space-y-6">
                 
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
-                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
-                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.</p>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌سازی ابری (Google Sheets)</h2>
+                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">
+                        اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.
+                    </p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
-                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up text-lg"></i> ارسال به فضای ابری
                         </button>
-                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-emerald-700 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 bg-white hover:bg-slate-100 text-emerald-700 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-down text-lg"></i> دریافت از فضای ابری
                         </button>
                     </div>
@@ -368,6 +380,29 @@
         </div>
     </div>
 
+    <!-- Modal for Fund Donations (کمک‌های خیّرین به خود صندوق) -->
+    <div id="fundDonationsModal" class="fixed inset-0 hidden flex items-center justify-center modal-overlay p-4 z-[60]">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="p-4 md:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="text-base md:text-lg font-black text-fuchsia-800 flex items-center gap-2"><i class="fa-solid fa-hand-holding-heart"></i> مدیریت سرمایه و کمک‌های خیّرین</h3>
+                <button onclick="closeModal('fundDonationsModal')" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl md:text-2xl"></i></button>
+            </div>
+            <div class="p-4 border-b border-slate-100 bg-fuchsia-50 text-fuchsia-800 text-[10px] md:text-xs leading-relaxed font-bold">
+                این مبالغ به عنوان «سرمایه اختصاصی صندوق» ثبت شده و متعلق به هیچ شخص خاصی نیستند. این مبالغ نیازی به بازپرداخت ندارند و صرفاً قدرت وام‌دهی و نقدینگی صندوق را بالا می‌‌برند.
+            </div>
+            <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-slate-50/50">
+                <div id="fundDonationsList" class="space-y-3 mb-6"></div>
+                <button onclick="addFundDonationRow()" class="w-full border-2 border-dashed border-slate-300 text-slate-500 hover:text-fuchsia-600 hover:border-fuchsia-400 hover:bg-fuchsia-50 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 text-xs md:text-sm">
+                    <i class="fa-solid fa-plus"></i> ثبت کمک جدید
+                </button>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row justify-end gap-3">
+                <button onclick="closeModal('fundDonationsModal')" class="w-full sm:w-auto px-6 py-2 rounded-lg font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition text-sm">انصراف</button>
+                <button onclick="saveFundDonations()" class="w-full sm:w-auto px-6 py-2 rounded-lg font-bold text-white bg-fuchsia-600 hover:bg-fuchsia-700 shadow-md transition text-sm">ذخیره اطلاعات</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let state = {
             config: { months: 12 },
@@ -388,7 +423,8 @@
                 { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, startMonth: 1, events: [], history: null },
                 { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
             ],
-            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0 }
+            fundDonations: [], // نگهداری کمک‌های اختصاصی و خیّرین صندوق
+            globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, blockedGuarantees: 0, totalEquity: 0 }
         };
 
         const EVENT_TYPES = {
@@ -403,10 +439,11 @@
             'resume_payment': 'از سرگیری واریز شهریه',
             'pay_missed_fee': 'جبران شهریه معوقه (مبلغ پرداختی)',
             'referral': 'معرفی عضو جدید (تعداد نفرات)',
-            'donation': 'کمک بلاعوض (مبلغ)',
+            'donation': 'کمک بلاعوض فردی (مبلغ)',
             'marriage': 'ثبت ازدواج'
         };
 
+        // ---------------- UI Controls ----------------
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -456,6 +493,7 @@
             }
         }
 
+        // ---------------- SILENT AUTO SAVE CORE ----------------
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
@@ -467,6 +505,7 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
+        // ---------------- GOOGLE SHEETS API LOGIC ----------------
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -526,10 +565,13 @@
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
+        // ---------------------------------------------------------
 
+        // ---------------- CORE SIMULATION ENGINE ----------------
         function runCoreSimulation() {
             const simMonths = state.config.months;
             const r = state.rules; 
+            if(!state.fundDonations) state.fundDonations = [];
             
             let gCash = 0; let gLoansActive = 0; let gBlocked = 0; 
             
@@ -547,7 +589,7 @@
                 for (let m = 1; m <= simMonths; m++) {
                     let monthLog = { month: m, details: [], startG: ghatreh, startS: shabnam, gChange: 0, sChange: 0 };
                     
-                    // بررسی ماه ورود کاربر
+                    // منطق ماه ورود کاربر به صندوق (قبل از این ماه پولی ثبت نمی‌شود)
                     let startM = member.startMonth || 1;
                     if (m < startM) {
                         monthLog.details.push(`<span class="text-slate-400 bg-slate-100 px-1 rounded text-[10px]">پیش از عضویت</span>`);
@@ -699,9 +741,10 @@
 
                     if (!missedFeeThisMonth) { balance += currentDepositAmount; globalEventsByMonth[m].deposits += currentDepositAmount; }
 
-                    // جلوگیری از منفی شدن امتیازات قطره و شبنم (قفل روی صفر)
+                    // --- قفل جلوگیری از منفی شدن امتیازات (Clamp) ---
                     if (ghatreh < 0) ghatreh = 0;
                     if (shabnam < 0) shabnam = 0;
+                    // ---------------------------------------------
 
                     monthLog.gChange = ghatreh - monthLog.startG; monthLog.sChange = shabnam - monthLog.startS;
                     history.g.push(ghatreh); history.s.push(shabnam); history.b.push(balance); history.logs.push(monthLog);
@@ -718,14 +761,25 @@
             });
 
             let runningCash = 0;
+            let runningEquity = 0;
             for(let m=1; m<=simMonths; m++) {
-                runningCash += globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments - globalEventsByMonth[m].loanDisbursements - globalEventsByMonth[m].withdrawals;
+                // استخراج کمک‌های خیّرین (خارجی) برای ماه جاری
+                let mExtDonations = (state.fundDonations || []).filter(e => e.month == m).reduce((s, e) => s + (parseInt(e.amount)||0), 0);
+                runningEquity += mExtDonations;
+
+                // محاسبه جریان نقدینگی ماهانه (با احتساب تزریق کمک‌های خیّرین)
+                runningCash += globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments - globalEventsByMonth[m].loanDisbursements - globalEventsByMonth[m].withdrawals + mExtDonations;
+                
                 state.globalFund.cashFlow[m] = runningCash;
                 let sumBalances = state.members.reduce((sum, mem) => sum + (mem.history ? mem.history.b[m] : 0), 0);
-                state.globalFund.assetsFlow[m] = sumBalances;
+                
+                // دارایی کل = مجموع طلب از اعضا (وام‌ها + موجودی آزاد اعضا) + سرمایه اختصاصی صندوق (بلاعوض)
+                state.globalFund.assetsFlow[m] = sumBalances + runningEquity;
             }
 
-            state.globalFund.loansIssued = gLoansActive; state.globalFund.blockedGuarantees = gBlocked;
+            state.globalFund.loansIssued = gLoansActive; 
+            state.globalFund.blockedGuarantees = gBlocked;
+            state.globalFund.totalEquity = runningEquity;
 
             updateGlobalUI();
             updateMemberLiveStats();
@@ -747,6 +801,7 @@
             if(!isNaN(configVal) && configVal > 0) state.config.months = configVal;
             runCoreSimulation(); 
             
+            // رفع مشکل گرافیکی آپدیت چارت در صورت پنهان بودن
             if (chartFundCashflow) chartFundCashflow.resize();
             if (chartFundPts) chartFundPts.resize();
             if (window.chartIndInstance) window.chartIndInstance.resize();
@@ -762,8 +817,11 @@
             document.getElementById('statActiveLoans').innerText = Math.floor(state.globalFund.loansIssued).toLocaleString();
             document.getElementById('statBlocked').innerText = state.globalFund.blockedGuarantees.toLocaleString();
             
+            // نمایش سرمایه اختصاصی صندوق در داشبورد
+            document.getElementById('statFundEquity').innerText = (state.globalFund.totalEquity || 0).toLocaleString();
+            
             let ratio = finalAssets > 0 ? ((finalCash / finalAssets) * 100).toFixed(1) : 0;
-            document.getElementById('statLiquidRatio').innerText = `${ratio}% از دارایی کل نقد است`;
+            document.getElementById('statLiquidRatio').innerText = `${ratio}% از کل دارایی نقد است`;
 
             let totalDemand = 0, totalShabnam = 0, tableHtml = '';
             const r = state.rules;
@@ -873,6 +931,7 @@
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             
+            // آپدیت کردن پرش (step) فلش‌های ماشین حساب وام بر اساس واحد پایه جدید
             const calcLoanInput = document.getElementById('calcTargetLoan');
             if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
 
@@ -1041,6 +1100,8 @@
         function addMember() { state.members.push({ id: Date.now(), name: "عضو جدید", deposit: state.rules.baseUnit, day: 5, startMonth: 1, events: [], history: null }); runCoreSimulation(); renderMembersTab(); }
 
         let currentEditIdx = -1, tempEvents = [];
+        
+        // --- توابع مدال رویدادهای کاربران ---
         function openEventsModal(idx) {
             currentEditIdx = idx; tempEvents = JSON.parse(JSON.stringify(state.members[idx].events));
             document.getElementById('eventsModalTitle').innerText = `رویدادهای: ${state.members[idx].name}`;
@@ -1060,6 +1121,8 @@
                 let showDays = ['custom_day', 'take_loan', 'delay'].includes(ev.type);
                 let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
                 
+                // منطق هوشمند برای تصحیح مبلغ وارد شده به مضرب‌های مجاز (Snapping)
+                // استثنائات: کمک بلاعوض (مبلغ دلخواه)، قسط معوق وام (مبلغ قسط اعشاری/خرد)، معرفی عضو (تعداد نفرات)
                 let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
                 
                 let amountInputLogic = (!isExempt && showAmt) ? 
@@ -1076,7 +1139,6 @@
                     </div>`;
             });
         }
-        
         function addEventRow() { tempEvents.push({ month: 1, type: 'take_loan', amount: state.rules.baseUnit * 10, days: 10 }); renderEventsList(); }
         function removeEvent(idx) { tempEvents.splice(idx, 1); renderEventsList(); }
         function saveEvents() { 
@@ -1085,8 +1147,51 @@
             runCoreSimulation();
             renderMembersTab();
         }
+
+        // --- توابع مدال کمک‌های خیّرین (خارجی) ---
+        let tempFundDonations = [];
+        
+        function openFundDonationsModal() {
+            if(!state.fundDonations) state.fundDonations = [];
+            tempFundDonations = JSON.parse(JSON.stringify(state.fundDonations));
+            renderFundDonationsList();
+            document.getElementById('fundDonationsModal').classList.remove('hidden');
+        }
+
+        function updateFundDonation(idx, field, value) {
+            tempFundDonations[idx][field] = value;
+        }
+
+        function renderFundDonationsList() {
+            const container = document.getElementById('fundDonationsList');
+            container.innerHTML = '';
+            if(tempFundDonations.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-400 py-4 text-xs md:text-sm font-bold">هیچ کمک اختصاصی ثبت نشده است.</div>';
+                return;
+            }
+            tempFundDonations.sort((a,b) => a.month - b.month).forEach((ev, idx) => {
+                container.innerHTML += `
+                    <div class="flex flex-wrap md:flex-nowrap items-end gap-2 bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-2">
+                        <div class="w-16"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">ماه</label><input type="number" class="w-full border rounded p-1 md:p-1.5 text-xs font-black text-center outline-none focus:border-fuchsia-500" value="${ev.month}" onchange="updateFundDonation(${idx},'month',this.value)" min="1"></div>
+                        <div class="flex-1"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">مبلغ کمک (تومان)</label><input type="number" value="${ev.amount}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-fuchsia-500" onchange="updateFundDonation(${idx},'amount',this.value)"></div>
+                        <div class="flex-1 min-w-[120px]"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">توضیحات (اختیاری)</label><input type="text" value="${ev.desc || ''}" placeholder="مثال: کمک خیّر" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-fuchsia-500" onchange="updateFundDonation(${idx},'desc',this.value)"></div>
+                        <button onclick="removeFundDonation(${idx})" class="text-red-400 hover:text-red-600 transition p-2 bg-red-50 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            });
+        }
+        
+        function addFundDonationRow() { tempFundDonations.push({ month: 1, amount: 1000000, desc: '' }); renderFundDonationsList(); }
+        function removeFundDonation(idx) { tempFundDonations.splice(idx, 1); renderFundDonationsList(); }
+        function saveFundDonations() { 
+            state.fundDonations = tempFundDonations; 
+            closeModal('fundDonationsModal'); 
+            triggerAutoSave();
+            runCoreSimulation();
+        }
+
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        // ---------------- UTILS ----------------
         function showDbMessage(msg, colorClass) {
             const el = document.getElementById('db-status');
             if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); }
@@ -1123,6 +1228,7 @@
             reader.readAsText(file);
         }
 
+        // AUTO-LOAD on Startup
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
             if(savedState) {
@@ -1131,6 +1237,7 @@
             }
             document.getElementById('globalSimMonths').value = state.config.months; 
             
+            // اعمال واحد پایه در شروع سیستم روی ماشین حساب
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
 
