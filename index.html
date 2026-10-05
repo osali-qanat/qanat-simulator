@@ -697,6 +697,10 @@
 
                     if (!missedFeeThisMonth) { balance += currentDepositAmount; globalEventsByMonth[m].deposits += currentDepositAmount; }
 
+                    // جلوگیری از منفی شدن امتیازات قطره و شبنم (قفل روی صفر)
+                    if (ghatreh < 0) ghatreh = 0;
+                    if (shabnam < 0) shabnam = 0;
+
                     monthLog.gChange = ghatreh - monthLog.startG; monthLog.sChange = shabnam - monthLog.startS;
                     history.g.push(ghatreh); history.s.push(shabnam); history.b.push(balance); history.logs.push(monthLog);
                     state.globalFund.pointsFlow[m] += (ghatreh + shabnam);
