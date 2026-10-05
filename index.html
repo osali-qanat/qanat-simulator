@@ -45,6 +45,7 @@
         }
         .param-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background-color: white; }
         
+        /* حل ریشه‌ای مشکل ارتفاع در مرورگرهای موبایل */
         @supports (-webkit-touch-callout: none) {
             html, body { height: -webkit-fill-available; }
         }
@@ -77,7 +78,7 @@
                 <i class="fa-solid fa-chart-pie w-5"></i> تحلیل کلان صندوق
             </button>
             <button onclick="switchTab('parameters')" id="nav-parameters" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white">
-                <i class="fa-solid fa-sliders w-5"></i> مدیریت پارامترها
+                <i class="fa-solid fa-sliders w-5"></i> مدیریت پارامترها و تورم
             </button>
             <button onclick="switchTab('members')" id="nav-members" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white">
                 <i class="fa-solid fa-users-gear w-5"></i> مدیریت اعضا و رویدادها
@@ -265,7 +266,8 @@
                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 md:p-4 rounded-xl text-xs md:text-sm font-medium mb-6">
                     <i class="fa-solid fa-triangle-exclamation ml-2"></i> هشدار: با تغییر مقادیر زیر و فشردن دکمه ذخیره، تمام محاسبات صندوق از ابتدا تا انتها با فرمول‌های جدید بازنویسی و ذخیره می‌شود.
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6" id="paramsContainer"></div>
+                <div id="paramsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6"></div>
+                
                 <div class="flex justify-end mt-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                     <button onclick="saveRulesAndRecalculate()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 md:px-8 py-3 rounded-xl font-black shadow-lg shadow-green-200 transition flex items-center justify-center gap-2 text-sm md:text-lg">
                         <i class="fa-solid fa-floppy-disk"></i> ذخیره تغییرات و پردازش مجدد سناریوها
@@ -332,7 +334,7 @@
                                 <div class="flex gap-2 mb-2">
                                     <div class="flex-1">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">مبلغ وام (تومان)</label>
-                                        <input type="number" id="calcTargetLoan" value="50000000" step="200000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" onchange="let b = state.rules.baseUnit; this.value = Math.max(b, Math.round((parseInt(this.value)||0)/b)*b); runReverseCalculator();" oninput="runReverseCalculator()">
+                                        <input type="number" id="calcTargetLoan" value="50000000" step="200000" class="w-full border border-indigo-200 rounded p-1.5 text-xs text-center font-black outline-none" onchange="let b = getCurrentBaseUnit(); this.value = Math.max(b, Math.round((parseInt(this.value)||0)/b)*b); runReverseCalculator();" oninput="runReverseCalculator()">
                                     </div>
                                     <div class="w-16">
                                         <label class="block text-[9px] md:text-[10px] font-bold text-indigo-800 mb-1">اقساط</label>
@@ -379,7 +381,7 @@
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
                     <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
-                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌سازی خواهد شد.</p>
+                    <p class="text-xs text-emerald-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌‌سازی خواهد شد.</p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
                         <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-emerald-900 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
@@ -469,6 +471,7 @@
                 loanGhatrehPenalty: 1000, loanShabnamMultiplier: 1, delayGhatrehPenalty: 10, delayShabnamPenalty: 2,
                 continuousMissedFeeSuspend: 2, continuousMissedFeeClose: 6, continuousDelaySuspend: 60, continuousDelayClose: 90
             },
+            inflation: [], // سوابق تعدیلات تورمی
             levels: [
                 { minG: 0, name: "چشمه", mult: 2, cap: 50000000 },
                 { minG: 950, name: "جویبار", mult: 3, cap: 100000000 },
@@ -484,6 +487,7 @@
         };
 
         const EVENT_TYPES = {
+            'change_deposit_permanent': 'تغییر واریز ماهیانه (از این ماه به بعد)',
             'override_deposit': 'تغییر مبلغ واریزی (فقط در این ماه)',
             'custom_day': 'تغییر روز واریز پایه (در این ماه)',
             'take_loan': 'دریافت وام (مبلغ وام - تعداد اقساط)',
@@ -495,11 +499,10 @@
             'resume_payment': 'از سرگیری واریز شهریه',
             'pay_missed_fee': 'جبران شهریه معوقه (مبلغ پرداختی)',
             'referral': 'معرفی عضو جدید (تعداد نفرات)',
-            'donation': 'کمک بلاعوض (مبلغ)',
+            'donation': 'کمک بلاعوض فردی (مبلغ)',
             'marriage': 'ثبت ازدواج'
         };
 
-        // UI Controls
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -540,7 +543,7 @@
             if(tabId === 'dashboard') { if (chartFundCashflow) chartFundCashflow.resize(); if (chartFundPts) chartFundPts.resize(); }
             if(tabId === 'analytics') { if (window.chartIndInstance) window.chartIndInstance.resize(); }
 
-            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی افراد', 'database': 'مدیریت فضای ابری و ذخیره‌سازی' };
+            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها و تورم', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی افراد', 'database': 'مدیریت فضای ابری و ذخیره‌سازی' };
             document.getElementById('pageTitle').innerText = titles[tabId];
             
             if(tabId === 'parameters') renderParametersForm();
@@ -549,7 +552,6 @@
             }
         }
 
-        // SILENT AUTO SAVE CORE
         function triggerAutoSave() {
             try {
                 localStorage.setItem('qanat_state', JSON.stringify(state));
@@ -561,7 +563,6 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
-        // GOOGLE SHEETS API LOGIC
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -569,21 +570,15 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال ارسال...';
             btn.disabled = true;
-
             try {
                 const response = await fetch(GSHEET_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(state)
+                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(state)
                 });
                 const result = await response.json();
                 if(result.status === 'success') showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-500');
                 else showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-red-500');
-            } catch(e) {
-                showDbMessage('ارتباط با سرور ابری برقرار نشد. (ممکن است نیاز به VPN باشد)', 'text-rose-500');
-            }
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            } catch(e) { showDbMessage('ارتباط با سرور ابری برقرار نشد. (ممکن است نیاز به VPN باشد)', 'text-rose-500'); }
+            btn.innerHTML = originalText; btn.disabled = false;
         }
 
         async function loadFromGoogleSheets() {
@@ -591,32 +586,40 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال دریافت...';
             btn.disabled = true;
-
             try {
                 const response = await fetch(GSHEET_API_URL, { method: 'GET' });
                 const result = await response.json();
-                
-                if(result.status === 'empty') {
-                    showDbMessage('فایل ابری شما خالی است. ابتدا اطلاعات را ارسال کنید.', 'text-amber-500');
+                if(result.status === 'empty') { showDbMessage('فایل ابری شما خالی است. ابتدا اطلاعات را ارسال کنید.', 'text-amber-500');
                 } else if (result.config && result.members) {
-                    state = result;
-                    document.getElementById('globalSimMonths').value = state.config.months;
-                    triggerAutoSave(); 
-                    renderMembersTab();
-                    runCoreSimulation();
+                    state = result; document.getElementById('globalSimMonths').value = state.config.months;
+                    triggerAutoSave(); renderMembersTab(); runCoreSimulation();
                     showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-500');
                 } else showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-red-500');
-            } catch(e) {
-                showDbMessage('خطا در دریافت اطلاعات ابری.', 'text-rose-500');
-            }
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            } catch(e) { showDbMessage('خطا در دریافت اطلاعات ابری.', 'text-rose-500'); }
+            btn.innerHTML = originalText; btn.disabled = false;
         }
 
-        // CORE SIMULATION ENGINE (With Dynamic Guarantee Algorithm)
+        // Helper: دریافت قوانین و واحد پایه فعال برای هر ماه بر اساس جدول تورم
+        function getActiveRules(m) {
+            let active = JSON.parse(JSON.stringify(state.rules));
+            if (state.inflation && state.inflation.length > 0) {
+                let sorted = [...state.inflation].sort((a,b) => a.month - b.month);
+                for (let inf of sorted) {
+                    if (m >= inf.month) {
+                        active.baseUnit = parseInt(inf.baseUnit) || active.baseUnit;
+                    }
+                }
+            }
+            return active;
+        }
+        
+        // Helper: واحد پایه در آخرین ماه شبیه‌ساز (برای ماشین‌حساب‌ها)
+        function getCurrentBaseUnit() {
+            return getActiveRules(state.config.months).baseUnit;
+        }
+
         function runCoreSimulation() {
             const simMonths = state.config.months;
-            const r = state.rules; 
             if(!state.fundDonations) state.fundDonations = [];
             
             let gLoansActive = 0; 
@@ -633,17 +636,32 @@
                 let isClosed = false, isSuspended = false, consecutiveMissedFees = 0, isPaymentStopped = false, missedFeeDebt = 0;
                 let history = { g: [0], s: [0], b: [0], logs: [], finalLevel: null, freeBal: 0, missedDebt: 0 };
 
-                // Helper: محاسبه دینامیک موجودی آزاد، بدهی وام و مسدودی خودکار در هر لحظه
+                // محاسبه دینامیک موجودی آزاد و بدهی (وثیقه دینامیک وام خود شخص + ضمانت دیگران)
                 const getDynamicFreeBal = () => {
                     let tempDebt = 0;
                     activeLoansTracker.forEach(loan => { tempDebt += (loan.amt / loan.months) * (loan.months - loan.paid); });
-                    let tAuto = Math.min(Math.max(0, balance - blockedBalance), tempDebt);
+                    let tAuto = Math.min(Math.max(0, balance - blockedBalance), tempDebt); // بلوکه شدن اتوماتیک برای وام خودش
                     return { free: balance - blockedBalance - tAuto, debt: tempDebt, autoBlocked: tAuto };
                 };
 
+                // سیستم هوشمند سهم‌بندی (برای اعمال خودکار تورم)
+                // اگر واریز اولیه فرد ۲۰۰ بود و پایه هم ۲۰۰ است، سهم او ۱ است. با تورم و تغییر پایه، واریزی او به صورت خودکار ضرب در ۱ می‌شود.
+                let initialBase = state.rules.baseUnit;
+                let currentShare = (parseInt(member.deposit) || 0) / initialBase;
+                let currentOngoingDay = member.day;
+
                 for (let m = 1; m <= simMonths; m++) {
+                    let activeRules = getActiveRules(m);
+                    let activeBaseUnit = activeRules.baseUnit;
+                    
                     let monthLog = { month: m, details: [], startG: ghatreh, startS: shabnam, gChange: 0, sChange: 0 };
                     
+                    // بررسی تغییر پایه تورم و ثبت در لاگ
+                    let prevActiveBase = m > 1 ? getActiveRules(m-1).baseUnit : initialBase;
+                    if (activeBaseUnit !== prevActiveBase) {
+                        monthLog.details.push(`<span class="text-rose-600 font-bold bg-rose-50 px-1 rounded"><i class="fa-solid fa-arrow-trend-up"></i> اعمال تورم: واحد پایه جدید ${activeBaseUnit.toLocaleString()} تومان</span>`);
+                    }
+
                     let startM = member.startMonth || 1;
                     if (m < startM) {
                         monthLog.details.push(`<span class="text-slate-400 bg-slate-100 px-1 rounded text-[10px]">پیش از عضویت</span>`);
@@ -657,12 +675,11 @@
                         continue;
                     }
 
-                    let currentDay = member.day;
                     let missedFeeThisMonth = isPaymentStopped;
                     let activeDelayPenalty = false;
                     let evs = member.events.filter(e => e.month == m);
                     
-                    // قسط دهی
+                    // قسط دهی و بازگشت پول به صندوق
                     activeLoansTracker.forEach(loan => {
                         if (loan.paid < loan.months) {
                             let inst = loan.amt / loan.months;
@@ -671,26 +688,33 @@
                         }
                     });
 
-                    // چک توقف واریز
+                    // بررسی توقف واریز و تغییر روز/سهم دائمی
                     evs.forEach(ev => {
                         if(ev.type === 'stop_payment') { isPaymentStopped = true; missedFeeThisMonth = true; monthLog.details.push(`<span class="text-red-500 font-bold">توقف کامل واریز شهریه</span>`); }
                         if(ev.type === 'resume_payment') { isPaymentStopped = false; missedFeeThisMonth = false; monthLog.details.push(`<span class="text-emerald-500 font-bold">از سرگیری واریز شهریه</span>`); }
-                        if(ev.type === 'custom_day') { currentDay = parseInt(ev.days) || currentDay; monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentDay}</span>`); }
+                        if(ev.type === 'custom_day') { currentOngoingDay = parseInt(ev.days) || currentOngoingDay; monthLog.details.push(`<span class="text-slate-600">تغییر روز واریز به ${currentOngoingDay}</span>`); }
+                        if(ev.type === 'change_deposit_permanent') { 
+                            currentShare = (parseInt(ev.amount) || 0) / activeBaseUnit; 
+                            monthLog.details.push(`<span class="text-blue-700 font-bold bg-blue-50 px-1 rounded">تغییر واریز ماهیانه دائم به ${parseInt(ev.amount).toLocaleString()} تومان</span>`);
+                        }
                     });
 
+                    // محاسبه مبلغ واریزی این ماه (با اعمال خودکار تورم بر اساس ضریب سهم)
+                    let currentDepositAmount = currentShare * activeBaseUnit;
+
+                    // بررسی عدم پرداخت
                     if (missedFeeThisMonth) {
                         consecutiveMissedFees++;
-                        missedFeeDebt += r.baseUnit; 
-                        monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${r.baseUnit.toLocaleString()} تومان به بدهی معوق</span>`);
-                        if(consecutiveMissedFees >= r.continuousMissedFeeClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200 px-1 rounded font-black">انسداد قطعی</span>`); } 
-                        else if(consecutiveMissedFees >= r.continuousMissedFeeSuspend) { isSuspended = true; monthLog.details.push(`<span class="text-orange-700 bg-orange-200 px-1 rounded font-bold">تعلیق حساب</span>`); }
+                        missedFeeDebt += activeBaseUnit; 
+                        monthLog.details.push(`<span class="text-red-600 font-bold">عدم پرداخت شهریه: افزودن ${activeBaseUnit.toLocaleString()} تومان بدهی معوق</span>`);
+                        if(consecutiveMissedFees >= activeRules.continuousMissedFeeClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200 px-1 rounded font-black">انسداد قطعی</span>`); } 
+                        else if(consecutiveMissedFees >= activeRules.continuousMissedFeeSuspend) { isSuspended = true; monthLog.details.push(`<span class="text-orange-700 bg-orange-200 px-1 rounded font-bold">تعلیق حساب</span>`); }
                     } else if (consecutiveMissedFees > 0) {
                         consecutiveMissedFees = 0; isSuspended = false; 
                         monthLog.details.push(`<span class="text-emerald-500 text-[10px] font-bold">واریز مجدد و خروج از تعلیق</span>`);
                     }
-
-                    let currentDepositAmount = parseInt(member.deposit) || 0;
                     
+                    // اعمال رویدادهای مالی
                     evs.forEach(ev => {
                         let amt = parseInt(ev.amount) || 0;
                         let paramDays = parseInt(ev.days) || 0;
@@ -702,8 +726,8 @@
                             case 'take_loan':
                                 if (m <= 3) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: وام در ۳ ماه اول ممنوع است</span>`);
                                 else {
-                                    let units = Math.floor(amt / r.baseUnit); ghatreh -= r.loanGhatrehPenalty;
-                                    let sPenalty = units * paramDays * r.loanShabnamMultiplier; shabnam -= sPenalty;
+                                    let units = Math.floor(amt / activeBaseUnit); ghatreh -= activeRules.loanGhatrehPenalty;
+                                    let sPenalty = units * paramDays * activeRules.loanShabnamMultiplier; shabnam -= sPenalty;
                                     globalEventsByMonth[m].loanDisbursements += amt; gLoansActive += amt;
                                     activeLoansTracker.push({amt: amt, months: paramDays, paid: 0});
                                     state.globalFund.issuedLoansList.push({ memberName: member.name, amount: amt, months: paramDays, startMonth: m });
@@ -715,8 +739,8 @@
                                 if (amt > balInfoW.free) monthLog.details.push(`<span class="text-red-500 font-bold">خطا: موجودی آزاد کافی نیست (درگیر ضمانت)</span>`);
                                 else {
                                     balance -= amt; globalEventsByMonth[m].withdrawals += amt;
-                                    let units = Math.floor(amt / r.baseUnit); shabnam -= units * r.withdrawShabnamPenalty;
-                                    let gPenaltyRule = (m <= 12) ? r.withdrawGhatrehPenalty_yr1 : (m <= 60 ? r.withdrawGhatrehPenalty_yr2_5 : r.withdrawGhatrehPenalty_yr6_plus);
+                                    let units = Math.floor(amt / activeBaseUnit); shabnam -= units * activeRules.withdrawShabnamPenalty;
+                                    let gPenaltyRule = (m <= 12) ? activeRules.withdrawGhatrehPenalty_yr1 : (m <= 60 ? activeRules.withdrawGhatrehPenalty_yr2_5 : activeRules.withdrawGhatrehPenalty_yr6_plus);
                                     ghatreh -= units * gPenaltyRule; monthLog.details.push(`<span class="text-orange-600 font-bold">برداشت: کسر امتیازات</span>`);
                                 } break;
                             case 'guarantee':
@@ -726,21 +750,22 @@
                             case 'unblock':
                                 blockedBalance -= amt; if(blockedBalance<0) blockedBalance=0; monthLog.details.push(`<span class="text-emerald-600">آزادسازی ضمانت</span>`); break;
                             case 'delay':
-                                activeDelayPenalty = true; let unitsD = Math.floor(amt / r.baseUnit);
-                                ghatreh -= unitsD * paramDays * r.delayGhatrehPenalty; shabnam -= unitsD * paramDays * r.delayShabnamPenalty;
+                                activeDelayPenalty = true; let unitsD = Math.floor(amt / activeBaseUnit);
+                                ghatreh -= unitsD * paramDays * activeRules.delayGhatrehPenalty; shabnam -= unitsD * paramDays * activeRules.delayShabnamPenalty;
                                 monthLog.details.push(`<span class="text-red-600 font-black">معوقه وام! کسر امتیاز</span>`);
-                                if (paramDays >= r.continuousDelayClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200">انسداد بابت معوقه حاد</span>`);}
+                                if (paramDays >= activeRules.continuousDelayClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-red-800 bg-red-200">انسداد بابت معوقه حاد</span>`);}
                                 break;
-                            case 'referral': ghatreh += amt*r.referralReward; shabnam += amt*r.referralReward; monthLog.details.push(`<span class="text-emerald-600">معرفی عضو</span>`); break;
+                            case 'referral': ghatreh += amt*activeRules.referralReward; shabnam += amt*activeRules.referralReward; monthLog.details.push(`<span class="text-emerald-600">معرفی عضو</span>`); break;
                             case 'donation': 
-                                let pts = Math.floor(amt / r.donationDivisor) * r.donationReward; ghatreh += pts; shabnam += pts; 
+                                let pts = Math.floor(amt / activeRules.donationDivisor) * activeRules.donationReward; ghatreh += pts; shabnam += pts; 
                                 globalEventsByMonth[m].donations += amt; monthLog.details.push(`<span class="text-emerald-600">کمک بلاعوض فردی</span>`); break;
-                            case 'marriage': shabnam += r.marriageReward; monthLog.details.push(`<span class="text-pink-600">هدیه ازدواج</span>`); break;
+                            case 'marriage': shabnam += activeRules.marriageReward; monthLog.details.push(`<span class="text-pink-600">هدیه ازدواج</span>`); break;
                         }
                     });
 
+                    // جریمه رسوب بدهی
                     if (missedFeeDebt > 0) {
-                        let debtUnits = Math.floor(missedFeeDebt / r.baseUnit);
+                        let debtUnits = Math.floor(missedFeeDebt / activeBaseUnit);
                         if(debtUnits > 0) {
                             let penaltyG = debtUnits * 30; let penaltyS = debtUnits * 30;
                             ghatreh -= penaltyG; shabnam -= penaltyS;
@@ -748,33 +773,36 @@
                         }
                     }
 
+                    // امتیازات رشد و استمرار
                     if (!activeDelayPenalty && !isClosed) {
-                        let effectiveBal = balance - blockedBalance; // پاداش رسوب روی پولی که خودش وام گرفته اعمال میشود طبق استاندارد قرض‌الحسنه
-                        let balReward = Math.floor(Math.max(0, effectiveBal) / r.baseUnit) * r.minBalReward;
+                        let effectiveBal = balance - blockedBalance;
+                        let balReward = Math.floor(Math.max(0, effectiveBal) / activeBaseUnit) * activeRules.minBalReward;
                         ghatreh += balReward; shabnam += balReward;
 
                         if (isSuspended) {
                             monthLog.details.push(`<span class="text-orange-600 text-[10px] font-bold"><i class="fa-solid fa-lock"></i> حساب معلق است</span>`);
                         } else {
                             if (!missedFeeThisMonth) {
-                                ghatreh += (30 * r.dailyReward); shabnam += (30 * r.dailyReward);
-                                monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب: +${balReward} | استمرار: +${30 * r.dailyReward}</span>`);
-                                if (currentDay < 3) { let e = 3 - currentDay; ghatreh += e*r.earlyReward; shabnam += e*r.earlyReward; }
-                                else if (currentDay > 7) { let l = currentDay - 7; ghatreh -= l*r.latePenalty; shabnam -= l*r.latePenalty; }
+                                ghatreh += (30 * activeRules.dailyReward); shabnam += (30 * activeRules.dailyReward);
+                                monthLog.details.push(`<span class="text-slate-500 text-[10px]">رسوب: +${balReward} | استمرار: +${30 * activeRules.dailyReward}</span>`);
+                                if (currentOngoingDay < 3) { let e = 3 - currentOngoingDay; ghatreh += e*activeRules.earlyReward; shabnam += e*activeRules.earlyReward; }
+                                else if (currentOngoingDay > 7) { let l = currentOngoingDay - 7; ghatreh -= l*activeRules.latePenalty; shabnam -= l*activeRules.latePenalty; }
                             }
                         }
                     }
 
                     if (!missedFeeThisMonth) { balance += currentDepositAmount; globalEventsByMonth[m].deposits += currentDepositAmount; }
 
-                    if (ghatreh < 0) ghatreh = 0; if (shabnam < 0) shabnam = 0;
+                    // جلوگیری از منفی شدن امتیازات
+                    if (ghatreh < 0) ghatreh = 0; 
+                    if (shabnam < 0) shabnam = 0;
 
                     monthLog.gChange = ghatreh - monthLog.startG; monthLog.sChange = shabnam - monthLog.startS;
                     history.g.push(ghatreh); history.s.push(shabnam); history.b.push(balance); history.logs.push(monthLog);
                     state.globalFund.pointsFlow[m] += (ghatreh + shabnam);
                 }
 
-                // محاسبه قفل دینامیک و ضمانت‌ها در پایان دوره برای نمایش
+                // ثبت ضمانت‌های دینامیک در پایان دوره برای نمایش داشبورد
                 let finalDebt = 0;
                 activeLoansTracker.forEach(loan => { finalDebt += (loan.amt / loan.months) * (loan.months - loan.paid); });
                 let finalAutoBlocked = Math.min(Math.max(0, balance - blockedBalance), finalDebt);
@@ -851,6 +879,7 @@
             document.getElementById('statFundEquity').innerText = (state.globalFund.totalEquity || 0).toLocaleString();
             
             let totalManual = 0, totalAuto = 0, totalDemand = 0, totalShabnam = 0, tableHtml = '';
+            const currBaseUnit = getCurrentBaseUnit();
             const r = state.rules;
 
             state.members.forEach(m => {
@@ -862,7 +891,7 @@
                 
                 let targetMonths = 12;
                 let possibleUnits = Math.floor(lastS / (targetMonths * r.loanShabnamMultiplier));
-                let capShabnam = possibleUnits * r.baseUnit;
+                let capShabnam = possibleUnits * currBaseUnit;
                 let maxCapBal = h.freeBal * h.finalLevel.mult;
                 let maxCapLevel = h.finalLevel.cap;
                 let finalMaxLoan = Math.max(0, Math.min(capShabnam, maxCapBal, maxCapLevel));
@@ -891,8 +920,8 @@
             document.getElementById('statLiquidRatio').innerText = `${finalAssets > 0 ? ((finalCash / finalAssets) * 100).toFixed(1) : 0}% از کل دارایی نقد است`;
             document.getElementById('macroPotentialDemand').innerText = totalDemand.toLocaleString();
             document.getElementById('macroTotalShabnam').innerText = totalShabnam.toLocaleString();
-            let risk = finalCash > 0 ? ((totalDemand / finalCash) * 100).toFixed(1) : (totalDemand > 0 ? 'بی‌نهایت' : '0');
-            document.getElementById('macroRiskRatio').innerHTML = `<span class="${(risk > 100 || risk === 'بی‌نهایت') ? 'text-rose-600' : 'text-emerald-600'}">${risk}%</span>`;
+            let risk = finalCash > 0 ? ((totalDemand / finalCash) * 100).toFixed(1) : (totalDemand > 0 ? 'بی‌‌نهایت' : '0');
+            document.getElementById('macroRiskRatio').innerHTML = `<span class="${(risk > 100 || risk === 'بی‌‌نهایت') ? 'text-rose-600' : 'text-emerald-600'}">${risk}%</span>`;
             document.getElementById('macroMembersTable').innerHTML = tableHtml;
 
             // Analytics / Projections
@@ -964,10 +993,9 @@
 
         function renderParametersForm() {
             const container = document.getElementById('paramsContainer');
-            if(container.innerHTML.trim() !== '') return;
             
             const paramDefs = [
-                { title: 'فرمول اختصاصی وام‌دهی', keys: [ {k: 'baseUnit', l: 'واحد پایه مالی (تومان)'}, {k: 'loanShabnamMultiplier', l: 'ضریب مصرف شبنم در اقساط'}, {k: 'loanGhatrehPenalty', l: 'کسر ثابت قطره بابت دریافت وام'} ]},
+                { title: 'فرمول اختصاصی وام‌دهی', keys: [ {k: 'baseUnit', l: 'واحد پایه مالی اولیه (تومان)'}, {k: 'loanShabnamMultiplier', l: 'ضریب مصرف شبنم در اقساط'}, {k: 'loanGhatrehPenalty', l: 'کسر ثابت قطره بابت دریافت وام'} ]},
                 { title: 'امتیازات روزانه و رسوب', keys: [ {k: 'dailyReward', l: 'امتیاز حضور روزانه'}, {k: 'minBalReward', l: 'امتیاز رسوب موجودی (به ازای هر واحد)'} ]},
                 { title: 'جرایم و پاداش انضباط', keys: [ {k: 'earlyReward', l: 'پاداش تعجیل شهریه (امتیاز/روز)'}, {k: 'latePenalty', l: 'جریمه تاخیر شهریه (امتیاز/روز)'}, {k: 'delayGhatrehPenalty', l: 'جریمه قطره معوقه اقساط (هر واحد/روز)'}, {k: 'delayShabnamPenalty', l: 'جریمه شبنم معوقه اقساط (هر واحد/روز)'} ]},
                 { title: 'برداشت و مسدودی', keys: [ {k: 'withdrawShabnamPenalty', l: 'کسر شبنم برداشت (هر واحد)'}, {k: 'withdrawGhatrehPenalty_yr1', l: 'کسر قطره برداشت - سال اول'}, {k: 'withdrawGhatrehPenalty_yr2_5', l: 'کسر قطره برداشت - سال 2 تا 5'}, {k: 'withdrawGhatrehPenalty_yr6_plus', l: 'کسر قطره برداشت - سال 6 به بعد'} ]}
@@ -992,19 +1020,83 @@
                 </div>
             `).join('');
             html += `<div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2"><h3 class="text-xs md:text-sm font-black text-slate-800 mb-4 border-b pb-2">تنظیمات مرز سطوح کاربری، ضرایب و سقف وام</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${levelsHtml}</div></div>`;
+            
+            // Inflation Adjustments UI
+            html += `
+            <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 mt-2">
+                <h3 class="text-xs md:text-sm font-black text-slate-800 mb-2 border-b pb-2 flex items-center gap-2"><i class="fa-solid fa-arrow-trend-up text-rose-500"></i> تعدیل تورمی (تغییر واحد پایه در طول زمان)</h3>
+                <p class="text-[10px] text-slate-500 mb-4 leading-relaxed font-bold">با افزودن رکوردهای تورمی، واحد پایه مالی از ماه مشخص شده تغییر می‌کند. سیستم به صورت خودکار واریزی تمام اعضا را به همان نسبت (ضریب سهم) ارتقا می‌دهد.</p>
+                <div id="inflationList" class="space-y-2 mb-4"></div>
+                <div class="flex gap-2 items-end bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div class="w-20 md:w-24">
+                        <label class="text-[9px] font-bold text-slate-600 block mb-1">از ماهِ:</label>
+                        <input type="number" id="infMonth" class="w-full border border-slate-300 rounded p-1.5 md:p-2 text-xs md:text-sm font-black text-center" min="2" placeholder="مثال: 7">
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-[9px] font-bold text-slate-600 block mb-1">واحد پایه جدید (تومان):</label>
+                        <input type="number" id="infBase" class="w-full border border-slate-300 rounded p-1.5 md:p-2 text-xs md:text-sm font-black text-center" placeholder="مثال: 350000">
+                    </div>
+                    <button onclick="addInflation()" class="bg-rose-500 hover:bg-rose-600 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold shadow transition"><i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">افزودن تعدیل</span></button>
+                </div>
+            </div>`;
+
+            container.innerHTML = html;
+            renderInflationList();
+        }
+
+        function renderInflationList() {
+            const container = document.getElementById('inflationList');
+            if(!container) return;
+            if(!state.inflation || state.inflation.length === 0) {
+                container.innerHTML = '<div class="text-[10px] text-slate-400 font-bold text-center py-3 bg-slate-50 rounded border border-dashed border-slate-200">هیچ تعدیل تورمی ثبت نشده است.</div>';
+                return;
+            }
+            let html = '';
+            [...state.inflation].sort((a,b) => a.month - b.month).forEach((inf, idx) => {
+                html += `<div class="flex justify-between items-center bg-white border border-rose-200 p-3 rounded-lg shadow-sm text-xs transition hover:bg-rose-50">
+                    <span class="font-bold text-slate-600">از ابتدای ماه <span class="text-rose-600 text-sm font-black mx-1">${inf.month}</span></span>
+                    <span class="font-black text-slate-800 bg-slate-100 px-2 py-1 rounded">پایه جدید: ${inf.baseUnit.toLocaleString()} تومان</span>
+                    <button onclick="removeInflation(${idx})" class="text-red-400 hover:text-red-600 bg-red-50 p-1.5 rounded"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+            });
             container.innerHTML = html;
         }
 
+        function addInflation() {
+            let m = parseInt(document.getElementById('infMonth').value);
+            let b = parseInt(document.getElementById('infBase').value);
+            if(!m || !b || m < 2) return;
+            if(!state.inflation) state.inflation = [];
+            state.inflation.push({month: m, baseUnit: b});
+            document.getElementById('infMonth').value = '';
+            document.getElementById('infBase').value = '';
+            renderInflationList();
+            triggerAutoSave();
+        }
+        function removeInflation(idx) {
+            state.inflation.splice(idx, 1);
+            renderInflationList();
+            triggerAutoSave();
+        }
+
         function saveRulesAndRecalculate() {
-            Object.keys(state.rules).forEach(k => { const el = document.getElementById(`param_${k}`); if(el) state.rules[k] = parseFloat(el.value) || 0; });
+            Object.keys(state.rules).forEach(k => {
+                const el = document.getElementById(`param_${k}`);
+                if(el) state.rules[k] = parseFloat(el.value) || 0;
+            });
             state.levels.forEach((lvl, idx) => {
-                const minGEl = document.getElementById(`lvl_${idx}_minG`); const multEl = document.getElementById(`lvl_${idx}_mult`); const capEl = document.getElementById(`lvl_${idx}_cap`);
-                if(minGEl) lvl.minG = parseInt(minGEl.value) || 0; if(multEl) lvl.mult = parseFloat(multEl.value) || 0; if(capEl) lvl.cap = parseInt(capEl.value) || 0;
+                const minGEl = document.getElementById(`lvl_${idx}_minG`);
+                const multEl = document.getElementById(`lvl_${idx}_mult`);
+                const capEl = document.getElementById(`lvl_${idx}_cap`);
+                if(minGEl) lvl.minG = parseInt(minGEl.value) || 0;
+                if(multEl) lvl.mult = parseFloat(multEl.value) || 0;
+                if(capEl) lvl.cap = parseInt(capEl.value) || 0;
             });
             state.levels.sort((a, b) => a.minG - b.minG);
             
             const calcLoanInput = document.getElementById('calcTargetLoan');
-            if(calcLoanInput) calcLoanInput.step = state.rules.baseUnit;
+            if(calcLoanInput) calcLoanInput.step = getCurrentBaseUnit();
+
             runCoreSimulation();
         }
 
@@ -1081,10 +1173,12 @@
             const select = document.getElementById('userSelectDropdown');
             if(!select.value) return;
             const h = state.members[parseInt(select.value)].history; const r = state.rules;
+            const currBaseUnit = getCurrentBaseUnit();
+            
             const targetAmt = parseInt(document.getElementById('calcTargetLoan').value) || 0;
             const targetMonths = parseInt(document.getElementById('calcTargetMonths').value) || 1;
             
-            const reqUnits = Math.ceil(targetAmt / r.baseUnit);
+            const reqUnits = Math.ceil(targetAmt / currBaseUnit);
             const reqShabnam = reqUnits * targetMonths * r.loanShabnamMultiplier;
             const currentShabnam = h.s[h.s.length-1];
             const maxCapLevel = h.finalLevel.cap;
@@ -1107,11 +1201,13 @@
             const select = document.getElementById('userSelectDropdown');
             if(!select.value) return;
             const h = state.members[parseInt(select.value)].history; const r = state.rules;
+            const currBaseUnit = getCurrentBaseUnit();
+            
             const targetMonths = parseInt(document.getElementById('calcForwardMonths').value) || 1;
             const currentShabnam = h.s[h.s.length-1];
             
             const possibleUnits = Math.floor(currentShabnam / (targetMonths * r.loanShabnamMultiplier));
-            const capShabnam = possibleUnits * r.baseUnit;
+            const capShabnam = possibleUnits * currBaseUnit;
             const maxCapBal = h.freeBal * h.finalLevel.mult;
             const maxCapLevel = h.finalLevel.cap;
             
@@ -1160,13 +1256,13 @@
                         </div>`;
                 }
                 container.innerHTML += `
-                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-200 shadow-sm relative flex flex-col">
+                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-200 shadow-sm relative flex flex-col hover:border-indigo-200 transition">
                         <div class="flex justify-between items-start mb-4 border-b border-slate-100 pb-2">
                             <input type="text" value="${m.name}" onchange="state.members[${index}].name=this.value; triggerAutoSave(); runCoreSimulation();" class="font-black text-sm md:text-base text-slate-800 bg-transparent outline-none w-3/4 hover:border-b hover:border-slate-300 focus:border-indigo-500 transition-colors">
                             <button onclick="state.members.splice(${index},1); renderMembersTab(); runCoreSimulation();" class="text-slate-300 hover:text-red-500 transition p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <div class="grid grid-cols-3 gap-2 md:gap-3 mb-4 text-[10px] md:text-xs">
-                            <div class="param-group"><label>واریز (تومان)</label><input type="number" value="${m.deposit}" step="${state.rules.baseUnit}" onchange="let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.max(b, Math.round(v/b)*b); this.value = v; state.members[${index}].deposit=v; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5"></div>
+                            <div class="param-group"><label>واریز اولیه</label><input type="number" value="${m.deposit}" step="${state.rules.baseUnit}" onchange="let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.max(b, Math.round(v/b)*b); this.value = v; state.members[${index}].deposit=v; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" title="واریز پایه در ماه ورود"></div>
                             <div class="param-group"><label>روز (1-30)</label><input type="number" value="${m.day}" onchange="state.members[${index}].day=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="30"></div>
                             <div class="param-group"><label>ماه ورود</label><input type="number" value="${m.startMonth || 1}" onchange="state.members[${index}].startMonth=parseInt(this.value)||1; triggerAutoSave(); runCoreSimulation();" class="!font-normal !p-1 md:!p-1.5" min="1" max="120"></div>
                         </div>
@@ -1196,14 +1292,16 @@
                 let typeOpts = Object.entries(EVENT_TYPES).map(([k,v]) => `<option value="${k}" ${ev.type===k?'selected':''}>${v}</option>`).join('');
                 let showAmt = !['custom_day', 'stop_payment', 'resume_payment', 'marriage'].includes(ev.type);
                 let showDays = ['custom_day', 'take_loan', 'delay'].includes(ev.type);
-                let stepVal = (ev.type === 'referral') ? 1 : state.rules.baseUnit;
+                
+                let activeBaseForEvent = getActiveRules(ev.month).baseUnit;
+                let stepVal = (ev.type === 'referral') ? 1 : activeBaseForEvent;
                 
                 let isExempt = ['referral', 'donation', 'delay'].includes(ev.type);
-                let amountInputLogic = (!isExempt && showAmt) ? `let b = state.rules.baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : `updateEvent(${idx},'amount',this.value);`;
+                let amountInputLogic = (!isExempt && showAmt) ? `let b = getActiveRules(${ev.month}).baseUnit; let v = parseInt(this.value)||0; v = Math.round(v/b)*b; this.value = v; updateEvent(${idx},'amount',v);` : `updateEvent(${idx},'amount',this.value);`;
 
                 container.innerHTML += `
                     <div class="flex flex-wrap md:flex-nowrap items-end gap-2 bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-2">
-                        <div class="w-12"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">ماه</label><input type="number" class="w-full border rounded p-1 md:p-1.5 text-xs font-black text-center outline-none focus:border-indigo-500" value="${ev.month}" onchange="updateEvent(${idx},'month',this.value)"></div>
+                        <div class="w-12"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">ماه</label><input type="number" class="w-full border rounded p-1 md:p-1.5 text-xs font-black text-center outline-none focus:border-indigo-500" value="${ev.month}" onchange="updateEvent(${idx},'month',this.value); renderEventsList();"></div>
                         <div class="flex-1 min-w-[150px]"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">نوع</label><select class="w-full border rounded p-1 md:p-1.5 text-[10px] md:text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'type',this.value); renderEventsList();">${typeOpts}</select></div>
                         ${showAmt ? `<div class="w-24 flex-1 md:flex-none"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">مبلغ/تعداد</label><input type="number" value="${ev.amount}" step="${stepVal}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-indigo-500" onchange="${amountInputLogic}"></div>` : ''}
                         ${showDays ? `<div class="w-16 flex-1 md:flex-none"><label class="text-[9px] md:text-[10px] text-slate-400 block mb-1">روز/قسط</label><input type="number" value="${ev.days}" class="w-full border rounded p-1 md:p-1.5 text-xs font-bold outline-none focus:border-indigo-500" onchange="updateEvent(${idx},'days',this.value)"></div>` : ''}
@@ -1260,10 +1358,15 @@
 
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
-            if(savedState) { try { state = JSON.parse(savedState); } catch(e) { console.error("Error parsing state"); } }
+            if(savedState) { 
+                try { state = JSON.parse(savedState); } catch(e) { console.error("Error parsing state"); }
+            }
+            if(!state.inflation) state.inflation = [];
+            
             document.getElementById('globalSimMonths').value = state.config.months; 
             const calcTargetLoan = document.getElementById('calcTargetLoan');
-            if(calcTargetLoan) calcTargetLoan.step = state.rules.baseUnit;
+            if(calcTargetLoan) calcTargetLoan.step = getCurrentBaseUnit();
+            
             renderMembersTab(); runCoreSimulation(); 
         };
     </script>
