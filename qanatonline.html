@@ -678,15 +678,29 @@
             }
         }
 
+        let cloudSaveTimeout = null;
+
         function triggerAutoSave() {
             try {
+                // ثبت زمان آخرین تغییر برای تشخیص نسخه جدیدتر در دستگاه‌های دیگر
+                state.lastModified = Date.now();
+                
                 // ذخیره آفلاین (در مرورگر)
                 localStorage.setItem('qanat_state', JSON.stringify(state));
+                
                 const indicator = document.getElementById('autoSaveIndicator');
                 if(indicator) {
-                    indicator.classList.remove('opacity-0');
-                    setTimeout(() => indicator.classList.add('opacity-0'), 1500);
+                    indicator.innerHTML = '<i class="fa-solid fa-hard-drive"></i> <span class="hidden sm:inline">ذخیره محلی...</span>';
+                    indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-stone-100 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-stone-500 opacity-100";
                 }
+
+                // همگام‌سازی ابری خودکار با ۲ ثانیه تاخیر (Debounce)
+                // این تاخیر باعث می‌شود اگر پشت سر هم تایپ کردید، فقط یک بار در انتها به سرور پیام برود
+                clearTimeout(cloudSaveTimeout);
+                cloudSaveTimeout = setTimeout(() => {
+                    autoSaveToCloudBackground();
+                }, 2000);
+
             } catch(e) { console.error("Auto-save failed"); }
         }
 
@@ -706,6 +720,74 @@
             return __supaClientInstance;
         }
 
+        async function autoSaveToCloudBackground() {
+            const client = getSupaClient();
+            if(!client) return;
+            const indicator = document.getElementById('autoSaveIndicator');
+            
+            if(indicator) {
+                indicator.innerHTML = '<i class="fa-solid fa-cloud-arrow-up animate-pulse"></i> <span class="hidden sm:inline">در حال ارسال...</span>';
+                indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-sky-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-sky-600 opacity-100";
+            }
+
+            try {
+                const { error } = await client.from('qanat_db').upsert({ id: 'main_save', data_json: state });
+                if(error) throw error;
+                
+                if(indicator) {
+                    indicator.innerHTML = '<i class="fa-solid fa-cloud-check"></i> <span class="hidden sm:inline">ابری ذخیره شد</span>';
+                    indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-emerald-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-emerald-600 opacity-100";
+                    setTimeout(() => indicator.classList.remove('opacity-100'), 3000);
+                    setTimeout(() => indicator.classList.add('opacity-0'), 3000);
+                }
+            } catch(e) {
+                if(indicator) {
+                    indicator.innerHTML = '<i class="fa-solid fa-cloud-xmark"></i> <span class="hidden sm:inline">خطای ابری</span>';
+                    indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-rose-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-rose-600 opacity-100";
+                    setTimeout(() => indicator.classList.remove('opacity-100'), 3000);
+                    setTimeout(() => indicator.classList.add('opacity-0'), 3000);
+                }
+            }
+        }
+
+        async function autoLoadFromCloudBackground() {
+            const client = getSupaClient();
+            if(!client) return;
+            
+            try {
+                const { data, error } = await client.from('qanat_db').select('data_json').eq('id', 'main_save').single();
+                if(error || !data || !data.data_json) return;
+                
+                const cloudState = data.data_json;
+                const cloudTime = cloudState.lastModified || 0;
+                const localTime = state.lastModified || 0;
+
+                // اگر نسخه ابری جدیدتر از نسخه محلی است (برای جلوگیری از تداخل، اگر از جای دیگر آپدیت شده باشد)
+                if (cloudTime > localTime + 2000) {
+                    state = cloudState;
+                    document.getElementById('globalSimMonths').value = state.config.months;
+                    if(!state.inflation) state.inflation = [];
+                    if(!state.fundDonations) state.fundDonations = [];
+                    
+                    // ذخیره در حافظه محلی بدون فراخوانی مجدد آپلود
+                    localStorage.setItem('qanat_state', JSON.stringify(state));
+                    
+                    renderMembersTab();
+                    runCoreSimulation();
+                    
+                    const indicator = document.getElementById('autoSaveIndicator');
+                    if(indicator) {
+                        indicator.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span class="hidden sm:inline">آپدیت از دستگاه دیگر دریافت شد</span>';
+                        indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-indigo-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-indigo-700 opacity-100";
+                        setTimeout(() => indicator.classList.remove('opacity-100'), 5000);
+                        setTimeout(() => indicator.classList.add('opacity-0'), 5000);
+                    }
+                }
+            } catch(e) {
+                console.warn("Auto sync from cloud failed", e);
+            }
+        }
+
         async function saveToSupabase() {
             const client = getSupaClient();
             if(!client) return;
@@ -716,6 +798,7 @@
             btn.disabled = true;
 
             try {
+                state.lastModified = Date.now();
                 const { data, error } = await client.from('qanat_db').upsert({ id: 'main_save', data_json: state });
                 if(error) throw error;
                 showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-500');
@@ -745,12 +828,14 @@
                     showDbMessage('فایل ابری شما خالی است. ابتدا اطلاعات را ارسال کنید.', 'text-amber-500');
                 } else {
                     state = data.data_json;
+                    state.lastModified = Date.now(); // ریست کردن زمان برای جلوگیری از تداخل فوری
                     document.getElementById('globalSimMonths').value = state.config.months;
                     
                     if(!state.inflation) state.inflation = [];
                     if(!state.fundDonations) state.fundDonations = [];
                     
-                    triggerAutoSave(); 
+                    // ذخیره خام بدون تریگر آپلود
+                    localStorage.setItem('qanat_state', JSON.stringify(state)); 
                     renderMembersTab();
                     runCoreSimulation();
                     showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-500');
@@ -1634,6 +1719,13 @@
             }; reader.readAsText(file);
         }
 
+        // وقتی کاربر دوباره به تب مرورگر برمی‌گردد، اطلاعات را از سرور بروز می‌کند
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                autoLoadFromCloudBackground();
+            }
+        });
+
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
             if(savedState) { 
@@ -1660,12 +1752,16 @@
             }
             if(!state.inflation) state.inflation = [];
             if(state.rules.loanFeePercent === undefined) state.rules.loanFeePercent = 4;
+            if(!state.lastModified) state.lastModified = Date.now();
 
             document.getElementById('globalSimMonths').value = state.config.months; 
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = getCurrentBaseUnit();
 
             renderMembersTab(); runCoreSimulation(); 
+
+            // فراخوانی خودکار از دیتابیس ابری در بدو ورود به نرم‌‌افزار
+            autoLoadFromCloudBackground();
         };
     </script>
 </body>
