@@ -761,7 +761,7 @@
             localStorage.setItem('qanat_state', JSON.stringify(state));
             
             renderMembersTab();
-            runCoreSimulation();
+            runCoreSimulation(true);
             
             const indicator = document.getElementById('autoSaveIndicator');
             if(indicator) {
@@ -785,7 +785,7 @@
                 const localTime = state.lastModified || 0;
 
                 // اگر نسخه ابری جدیدتر از نسخه محلی است (برای جلوگیری از تداخل، اگر از جای دیگر آپدیت شده باشد)
-                if (cloudTime > localTime + 2000) {
+                if (cloudTime > localTime) {
                     applyCloudState(cloudState);
                 }
             } catch(e) {
@@ -809,7 +809,8 @@
                         const cloudTime = cloudState.lastModified || 0;
                         const localTime = state.lastModified || 0;
 
-                        if (cloudTime > localTime + 2000) {
+                        // اگر نسخه ابری جدیدتر است، بلافاصله آپدیت کن
+                        if (cloudTime > localTime) {
                             applyCloudState(cloudState);
                         }
                     }
@@ -867,7 +868,7 @@
                     // ذخیره خام بدون تریگر آپلود
                     localStorage.setItem('qanat_state', JSON.stringify(state)); 
                     renderMembersTab();
-                    runCoreSimulation();
+                    runCoreSimulation(true);
                     showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-500');
                 }
             } catch(e) {
@@ -957,7 +958,7 @@
         function getCurrentBaseUnit() { return getActiveRules(state.config.months).baseUnit; }
 
         // ---------------- STREAMING_CHUNK:Core Simulation Engine... ----------------
-        function runCoreSimulation() {
+        function runCoreSimulation(preventSave = false) {
             const simMonths = state.config.months;
             if(!state.fundDonations) state.fundDonations = [];
             if(state.rules.loanFeePercent === undefined) state.rules.loanFeePercent = 4;
@@ -1202,7 +1203,10 @@
 
             updateGlobalUI();
             updateMemberLiveStats();
-            triggerAutoSave();
+            
+            if (!preventSave) {
+                triggerAutoSave();
+            }
         }
 
         function getLevelData(g) {
@@ -1788,7 +1792,7 @@
             const calcTargetLoan = document.getElementById('calcTargetLoan');
             if(calcTargetLoan) calcTargetLoan.step = getCurrentBaseUnit();
 
-            renderMembersTab(); runCoreSimulation(); 
+            renderMembersTab(); runCoreSimulation(true); 
 
             // فراخوانی خودکار از دیتابیس ابری در بدو ورود به نرم‌‌افزار
             autoLoadFromCloudBackground();
