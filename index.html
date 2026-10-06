@@ -58,7 +58,7 @@
 
     <!-- Sidebar -->
     <aside id="mainSidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl transition-transform duration-300 transform translate-x-full lg:relative lg:translate-x-0 lg:z-20">
-        <div class="p-6 border-b border-slate-800 flex items-center justify-between gap-3">
+        <div class="p-6 border-b border-slate-800 flex items-center justify-between gap-3 flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                     <i class="fa-solid fa-water text-xl"></i>
@@ -84,7 +84,7 @@
                 <i class="fa-solid fa-users-gear w-5"></i> مدیریت اعضا و رویدادها
             </button>
             <button onclick="switchTab('analytics')" id="nav-analytics" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white">
-                <i class="fa-solid fa-microscope w-5"></i> داشبورد تحلیلی افراد
+                <i class="fa-solid fa-microscope w-5"></i> داشبورد تحلیلی اعضا
             </button>
             <button onclick="switchTab('database')" id="nav-database" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 hover:text-white mt-4 border border-slate-700 text-emerald-400">
                 <i class="fa-solid fa-cloud w-5"></i> مدیریت فضای ابری
@@ -100,7 +100,7 @@
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
                 <div class="flex items-center gap-1 md:gap-2 flex-1 min-w-0">
-                    <h1 id="pageTitle" class="text-sm md:text-xl font-black text-slate-800 truncate">تحلیل کلان صندوق</h1>
+                    <h1 id="pageTitle" class="text-sm md:text-xl font-black text-slate-800 truncate flex-shrink">تحلیل کلان صندوق</h1>
                     <span id="autoSaveIndicator" class="text-[9px] md:text-[10px] text-emerald-500 font-bold opacity-0 transition-opacity duration-300 bg-emerald-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
                         <i class="fa-solid fa-cloud-check"></i> <span class="hidden sm:inline">ذخیره شد</span>
                     </span>
@@ -293,7 +293,18 @@
 
             <!-- Analytics View -->
             <div id="view-analytics" class="hidden animate-fade h-full flex-col">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 justify-between items-center mb-6">
+                
+                <!-- Levels Summary -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex-shrink-0">
+                    <h3 class="text-sm font-black text-slate-800 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-indigo-500"></i> خلاصه وضعیت سطوح کاربری
+                    </h3>
+                    <div id="levelsSummaryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-4 justify-between items-center mb-6 flex-shrink-0">
                     <div class="flex-1 min-w-[250px] w-full">
                         <label class="block text-xs font-bold text-slate-500 mb-1">انتخاب عضو جهت تحلیل عمیق:</label>
                         <select id="userSelectDropdown" onchange="loadIndividualAnalytics()" class="w-full border-2 border-slate-200 rounded-xl p-2 text-sm font-bold focus:border-indigo-500 outline-none bg-slate-50"></select>
@@ -305,7 +316,7 @@
                     <p class="font-bold text-sm md:text-base">لطفا یک عضو را انتخاب کنید.</p>
                 </div>
 
-                <div id="indDashboardGrid" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+                <div id="indDashboardGrid" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 flex-1 pb-12">
                     <!-- Right Column: Status & Trajectory -->
                     <div class="lg:col-span-1 flex flex-col gap-6">
                         <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-100 shadow-sm relative overflow-hidden">
@@ -377,7 +388,6 @@
 
             <!-- Database View -->
             <div id="view-database" class="hidden animate-fade space-y-6">
-                
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-lg border border-emerald-500 text-white relative overflow-hidden flex-shrink-0">
                     <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
                     <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
@@ -462,6 +472,7 @@
     </div>
 
     <script>
+        // ---------------- STREAMING_CHUNK:Initializing state variables... ----------------
         let state = {
             config: { months: 12 },
             rules: {
@@ -480,7 +491,7 @@
             ],
             members: [
                 { id: 1, name: "کاربر نمونه (منظم)", deposit: 200000, day: 2, startMonth: 1, events: [], history: null },
-                { id: 2, name: "کاربر وام‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
+                { id: 2, name: "کاربر وام‌‌گیرنده", deposit: 200000, day: 5, startMonth: 1, events: [{ month: 4, type: 'take_loan', amount: 20000000, days: 10 }], history: null }
             ],
             fundDonations: [],
             globalFund: { cashFlow: [], assetsFlow: [], pointsFlow: [], loansIssued: 0, totalEquity: 0, totalInflow: 0, totalOutflow: 0, issuedLoansList: [] }
@@ -503,6 +514,7 @@
             'marriage': 'ثبت ازدواج'
         };
 
+        // ---------------- STREAMING_CHUNK:Configuring UI interactions... ----------------
         function toggleSidebar() {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -543,7 +555,7 @@
             if(tabId === 'dashboard') { if (chartFundCashflow) chartFundCashflow.resize(); if (chartFundPts) chartFundPts.resize(); }
             if(tabId === 'analytics') { if (window.chartIndInstance) window.chartIndInstance.resize(); }
 
-            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها و تورم', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی افراد', 'database': 'مدیریت فضای ابری و ذخیره‌سازی' };
+            const titles = { 'dashboard': 'تحلیل کلان صندوق', 'parameters': 'مدیریت پارامترها و تورم', 'members': 'مدیریت اعضا و رویدادها', 'analytics': 'داشبورد تحلیلی اعضا', 'database': 'مدیریت فضای ابری و ذخیره‌سازی' };
             document.getElementById('pageTitle').innerText = titles[tabId];
             
             if(tabId === 'parameters') renderParametersForm();
@@ -563,6 +575,7 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
+        // ---------------- STREAMING_CHUNK:Setting up Cloud Sync... ----------------
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -599,6 +612,7 @@
             btn.innerHTML = originalText; btn.disabled = false;
         }
 
+        // ---------------- STREAMING_CHUNK:Defining core financial rules... ----------------
         // Helper: دریافت قوانین و واحد پایه فعال برای هر ماه بر اساس جدول تورم
         function getActiveRules(m) {
             let active = JSON.parse(JSON.stringify(state.rules));
@@ -618,6 +632,7 @@
             return getActiveRules(state.config.months).baseUnit;
         }
 
+        // ---------------- STREAMING_CHUNK:Running main simulation loop... ----------------
         function runCoreSimulation() {
             const simMonths = state.config.months;
             if(!state.fundDonations) state.fundDonations = [];
@@ -645,7 +660,6 @@
                 };
 
                 // سیستم هوشمند سهم‌بندی (برای اعمال خودکار تورم)
-                // اگر واریز اولیه فرد ۲۰۰ بود و پایه هم ۲۰۰ است، سهم او ۱ است. با تورم و تغییر پایه، واریزی او به صورت خودکار ضرب در ۱ می‌شود.
                 let initialBase = state.rules.baseUnit;
                 let currentShare = (parseInt(member.deposit) || 0) / initialBase;
                 let currentOngoingDay = member.day;
@@ -849,6 +863,7 @@
             triggerAutoSave();
         }
 
+        // ---------------- STREAMING_CHUNK:Updating UI components... ----------------
         function getLevelData(g) {
             let lvl = state.levels[0]; let nextLvl = { name: 'بالاترین', minG: g };
             for (let i = state.levels.length - 1; i >= 0; i--) {
@@ -970,11 +985,50 @@
             }
 
             updateGlobalCharts();
+            updateLevelsSummary();
             populateUserDropdown();
             
             if(!document.getElementById('view-analytics').classList.contains('hidden') && document.getElementById('userSelectDropdown').value !== "") {
                 loadIndividualAnalytics();
             }
+        }
+
+        // ---------------- STREAMING_CHUNK:Rendering level summaries... ----------------
+        function updateLevelsSummary() {
+            const container = document.getElementById('levelsSummaryGrid');
+            if(!container) return;
+            
+            let html = '';
+            state.levels.forEach((lvl, index) => {
+                let count = 0, totalBal = 0, totalDebt = 0, totalS = 0;
+                
+                state.members.forEach(m => {
+                    if(m.history && m.history.finalLevel && m.history.finalLevel.name === lvl.name) {
+                        count++;
+                        totalBal += m.history.freeBal || 0;
+                        totalDebt += m.history.finalDebt || 0;
+                        totalS += m.history.s[m.history.s.length-1] || 0;
+                    }
+                });
+                
+                let colors = ['text-blue-600 bg-blue-50 border-blue-200', 'text-emerald-600 bg-emerald-50 border-emerald-200', 'text-indigo-600 bg-indigo-50 border-indigo-200', 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-200'];
+                let colorClass = colors[index % colors.length];
+                
+                html += `
+                    <div class="border rounded-xl p-3 shadow-sm ${colorClass}">
+                        <div class="flex justify-between items-center mb-2 border-b border-white/50 pb-1">
+                            <h4 class="font-black">${lvl.name}</h4>
+                            <span class="text-xs font-bold px-2 py-0.5 bg-white/50 rounded-full">${count} نفر</span>
+                        </div>
+                        <div class="space-y-1 text-[10px] md:text-[11px] font-medium text-slate-700">
+                            <div class="flex justify-between"><span>موجودی آزاد:</span><span class="font-bold">${totalBal.toLocaleString()}</span></div>
+                            <div class="flex justify-between"><span>بدهی وام:</span><span class="font-bold text-rose-600">${totalDebt.toLocaleString()}</span></div>
+                            <div class="flex justify-between"><span>مجموع شبنم:</span><span class="font-bold text-emerald-700">${Math.floor(totalS).toLocaleString()}</span></div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
         }
 
         function updateMemberLiveStats() {
@@ -1044,6 +1098,7 @@
             renderInflationList();
         }
 
+        // ---------------- STREAMING_CHUNK:Inflation configurations... ----------------
         function renderInflationList() {
             const container = document.getElementById('inflationList');
             if(!container) return;
@@ -1100,6 +1155,7 @@
             runCoreSimulation();
         }
 
+        // ---------------- STREAMING_CHUNK:Rendering Individual analytics... ----------------
         function loadIndividualAnalytics() {
             const select = document.getElementById('userSelectDropdown');
             const emptyState = document.getElementById('indEmptyState');
@@ -1221,6 +1277,7 @@
                 <div class="text-[9px] md:text-[10px] text-slate-500 bg-slate-50 p-1 rounded">عامل محدودکننده: ${limitingFactor}</div>`;
         }
 
+        // ---------------- STREAMING_CHUNK:Configuring chart instances... ----------------
         let chartFundCashflow = null, chartFundPts = null;
         function updateGlobalCharts() {
             const labels = Array.from({length: state.config.months + 1}, (_, i) => i === 0 ? 'M0' : `M${i}`);
@@ -1243,6 +1300,7 @@
             if(currentVal && select.querySelector(`option[value="${currentVal}"]`)) select.value = currentVal;
         }
 
+        // ---------------- STREAMING_CHUNK:Rendering event models and DOM... ----------------
         function renderMembersTab() {
             const container = document.getElementById('membersContainer'); container.innerHTML = '';
             state.members.forEach((m, index) => {
@@ -1337,6 +1395,7 @@
         function removeFundDonation(idx) { tempFundDonations.splice(idx, 1); renderFundDonationsList(); }
         function saveFundDonations() { state.fundDonations = tempFundDonations; closeModal('fundDonationsModal'); triggerAutoSave(); runCoreSimulation(); }
 
+        // ---------------- STREAMING_CHUNK:Finalizing window initialization... ----------------
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function showDbMessage(msg, colorClass) { const el = document.getElementById('db-status'); if(el) { el.innerHTML = `<span class="${colorClass}">${msg}</span>`; setTimeout(() => el.innerHTML = '', 5000); } }
 
