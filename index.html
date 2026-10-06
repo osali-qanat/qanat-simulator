@@ -77,7 +77,7 @@
                 </div>
                 <div>
                     <h2 class="text-white font-black text-lg leading-tight">صندوق قنات</h2>
-                    <p class="text-[10px] text-teal-200/60 font-bold tracking-wider">شبیه‌ساز هوشمند</p>
+                    <p class="text-[10px] text-teal-200/60 font-bold tracking-wider">شبیه‌‌ساز هوشمند</p>
                 </div>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-teal-400 hover:text-white">
@@ -319,19 +319,26 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-stone-200 flex flex-wrap gap-4 justify-between items-center mb-6 flex-shrink-0">
-                    <div class="flex-1 min-w-[250px] w-full">
-                        <label class="block text-xs font-bold text-stone-500 mb-1">انتخاب عضو جهت تحلیل عمیق:</label>
-                        <select id="userSelectDropdown" onchange="loadIndividualAnalytics()" class="w-full border-2 border-stone-200 rounded-xl p-2 text-sm font-bold focus:border-teal-500 outline-none bg-stone-50"></select>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-stone-200 flex flex-wrap gap-4 justify-between items-center mb-6 flex-shrink-0 relative z-20">
+                    <div class="flex-1 min-w-[250px] w-full relative" id="userSearchWrapper">
+                        <label class="block text-xs font-bold text-stone-500 mb-1">جستجو و انتخاب عضو جهت تحلیل عمیق:</label>
+                        <div class="flex items-center border-2 border-stone-200 rounded-xl bg-stone-50 focus-within:border-teal-500 transition-colors relative z-20">
+                            <i class="fa-solid fa-magnifying-glass text-stone-400 pl-3 pr-3"></i>
+                            <input type="text" id="userSearchInput" placeholder="نام عضو را تایپ کنید..." class="w-full p-2 text-sm font-bold outline-none bg-transparent" onfocus="document.getElementById('userSearchDropdown').classList.remove('hidden')" oninput="filterUserDropdown()" autocomplete="off">
+                            <button id="clearUserSearch" class="hidden px-3 text-stone-400 hover:text-rose-500" onclick="clearUserSelection()"><i class="fa-solid fa-times"></i></button>
+                        </div>
+                        <div id="userSearchDropdown" class="hidden absolute top-[70px] left-0 right-0 max-h-60 overflow-y-auto bg-white border border-stone-200 rounded-xl shadow-xl z-50 divide-y divide-stone-100">
+                            <!-- Injected via JS -->
+                        </div>
                     </div>
                 </div>
 
-                <div id="indEmptyState" class="flex-1 flex flex-col items-center justify-center text-stone-400 py-12">
+                <div id="indEmptyState" class="flex-1 flex flex-col items-center justify-center text-stone-400 py-12 z-10">
                     <i class="fa-solid fa-magnifying-glass-chart text-4xl md:text-6xl mb-4 opacity-30"></i>
-                    <p class="font-bold text-sm md:text-base">لطفا یک عضو را انتخاب کنید.</p>
+                    <p class="font-bold text-sm md:text-base">لطفا یک عضو را جستجو و انتخاب کنید.</p>
                 </div>
 
-                <div id="indDashboardGrid" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 flex-1 pb-12">
+                <div id="indDashboardGrid" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 flex-1 pb-12 z-10">
                     <!-- Right Column: Status & Trajectory -->
                     <div class="lg:col-span-1 flex flex-col gap-6">
                         <div class="bg-white rounded-2xl p-4 md:p-5 border border-stone-200 shadow-sm relative overflow-hidden">
@@ -504,8 +511,15 @@
         let state = {
             config: { months: 12 },
             rules: {
-                baseUnit: 200000, dailyReward: 1, minBalReward: 1, earlyReward: 0.1, latePenalty: 1, referralReward: 5,
-                donationDivisor: 50000, donationReward: 1, marriageReward: 4000, withdrawShabnamPenalty: 10,
+                baseUnit: 200000, 
+                // تفکیک شده قطره و شبنم
+                dailyRewardG: 1, dailyRewardS: 1, 
+                minBalRewardG: 1, minBalRewardS: 1, 
+                earlyRewardG: 0.1, earlyRewardS: 0.1, 
+                latePenaltyG: 1, latePenaltyS: 1, 
+                referralRewardG: 5, referralRewardS: 5,
+                donationDivisor: 50000, donationRewardG: 1, donationRewardS: 1, 
+                marriageReward: 4000, withdrawShabnamPenalty: 10,
                 withdrawGhatrehPenalty_yr1: 10, withdrawGhatrehPenalty_yr2_5: 6, withdrawGhatrehPenalty_yr6_plus: 4,
                 loanGhatrehPenalty: 1000, loanShabnamMultiplier: 1, delayGhatrehPenalty: 10, delayShabnamPenalty: 2,
                 continuousMissedFeeSuspend: 2, continuousMissedFeeClose: 6, continuousDelaySuspend: 60, continuousDelayClose: 90,
@@ -584,12 +598,11 @@
             return parts.join(" و ");
         }
 
-        // Global Event Listener for Number Inputs
         document.addEventListener('input', function(e) {
             if(e.target.type === 'number') {
                 let val = parseInt(e.target.value);
                 const helper = document.getElementById('numHelper');
-                if(!isNaN(val) && val > 0 && val >= 1000) { // Only show for somewhat large numbers
+                if(!isNaN(val) && val > 0 && val >= 1000) { 
                     let rect = e.target.getBoundingClientRect();
                     helper.innerHTML = val.toLocaleString() + ' <br> <span class="text-teal-200">' + numberToWords(val) + ' تومان</span>';
                     helper.style.left = (rect.left + rect.width / 2) + 'px';
@@ -649,7 +662,7 @@
             document.getElementById('pageTitle').innerText = titles[tabId];
             
             if(tabId === 'parameters') renderParametersForm();
-            if(tabId === 'analytics' && document.getElementById('userSelectDropdown').value !== "") {
+            if(tabId === 'analytics' && selectedUserIdForAnalytics !== null) {
                 loadIndividualAnalytics();
             }
         }
@@ -702,6 +715,67 @@
             btn.innerHTML = originalText; btn.disabled = false;
         }
 
+        // ---------------- STREAMING_CHUNK:Searchable Dropdown Logic... ----------------
+        let selectedUserIdForAnalytics = null;
+
+        function populateUserDropdown() {
+            const container = document.getElementById('userSearchDropdown');
+            container.innerHTML = '';
+            state.members.forEach((m, idx) => {
+                let div = document.createElement('div');
+                div.className = "user-search-item p-3 text-sm font-bold text-stone-700 hover:bg-teal-50 hover:text-teal-700 cursor-pointer transition-colors";
+                div.innerText = m.name;
+                div.dataset.idx = idx;
+                div.onclick = () => selectUserForAnalytics(idx, m.name);
+                container.appendChild(div);
+            });
+            
+            if(selectedUserIdForAnalytics !== null && state.members[selectedUserIdForAnalytics]) {
+                document.getElementById('userSearchInput').value = state.members[selectedUserIdForAnalytics].name;
+            }
+        }
+
+        function filterUserDropdown() {
+            const query = document.getElementById('userSearchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.user-search-item');
+            items.forEach(item => {
+                if (item.innerText.toLowerCase().includes(query)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function selectUserForAnalytics(idx, name) {
+            selectedUserIdForAnalytics = idx;
+            const input = document.getElementById('userSearchInput');
+            input.value = name;
+            document.getElementById('userSearchDropdown').classList.add('hidden');
+            document.getElementById('clearUserSearch').classList.remove('hidden');
+            loadIndividualAnalytics();
+        }
+
+        function clearUserSelection() {
+            selectedUserIdForAnalytics = null;
+            const input = document.getElementById('userSearchInput');
+            input.value = '';
+            document.getElementById('clearUserSearch').classList.add('hidden');
+            document.getElementById('indEmptyState').classList.remove('hidden');
+            document.getElementById('indDashboardGrid').classList.add('hidden');
+            document.getElementById('indDashboardGrid').classList.remove('grid');
+            
+            const items = document.querySelectorAll('.user-search-item');
+            items.forEach(item => item.classList.remove('hidden')); // reset filter
+        }
+
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.getElementById('userSearchWrapper');
+            if (searchContainer && !searchContainer.contains(e.target)) {
+                document.getElementById('userSearchDropdown')?.classList.add('hidden');
+            }
+        });
+
         // ---------------- STREAMING_CHUNK:Inflation & Base Unit helpers... ----------------
         function getActiveRules(m) {
             let active = JSON.parse(JSON.stringify(state.rules));
@@ -713,7 +787,6 @@
                     }
                 }
             }
-            // Ensure loan fee percent exists if coming from older saves
             if (active.loanFeePercent === undefined) active.loanFeePercent = 4;
             return active;
         }
@@ -826,11 +899,10 @@
                                     activeLoansTracker.push({amt: amt, months: paramDays, paid: 0});
                                     state.globalFund.issuedLoansList.push({ memberName: member.name, amount: amt, months: paramDays, startMonth: m });
                                     
-                                    // Loan Fee Processing
                                     let feePercent = activeRules.loanFeePercent || 4;
                                     let feeAmount = (amt * feePercent) / 100;
-                                    balance -= feeAmount; // Deduct fee from user's balance
-                                    globalEventsByMonth[m].fees += feeAmount; // Add to global fund equity
+                                    balance -= feeAmount; 
+                                    globalEventsByMonth[m].fees += feeAmount; 
 
                                     monthLog.details.push(`<span class="text-purple-600 font-bold">دریافت وام: کسر ${sPenalty} شبنم</span>`);
                                     monthLog.details.push(`<span class="text-teal-700 font-bold text-[10px]">کسر کارمزد (${feePercent}٪): ${feeAmount.toLocaleString()} تومان</span>`);
@@ -853,15 +925,27 @@
                                 blockedBalance -= amt; if(blockedBalance<0) blockedBalance=0; monthLog.details.push(`<span class="text-emerald-600">آزادسازی ضمانت</span>`); break;
                             case 'delay':
                                 activeDelayPenalty = true; let unitsD = Math.floor(amt / activeBaseUnit);
-                                ghatreh -= unitsD * paramDays * activeRules.delayGhatrehPenalty; shabnam -= unitsD * paramDays * activeRules.delayShabnamPenalty;
+                                ghatreh -= unitsD * paramDays * activeRules.delayGhatrehPenalty; 
+                                shabnam -= unitsD * paramDays * activeRules.delayShabnamPenalty;
                                 monthLog.details.push(`<span class="text-rose-600 font-black">معوقه وام! کسر امتیاز</span>`);
                                 if (paramDays >= activeRules.continuousDelayClose) { isClosed = true; ghatreh=0; shabnam=0; monthLog.details.push(`<span class="text-rose-800 bg-rose-200">انسداد بابت معوقه حاد</span>`);}
                                 break;
-                            case 'referral': ghatreh += amt*activeRules.referralReward; shabnam += amt*activeRules.referralReward; monthLog.details.push(`<span class="text-emerald-600">معرفی عضو</span>`); break;
+                            case 'referral': 
+                                ghatreh += amt*activeRules.referralRewardG; 
+                                shabnam += amt*activeRules.referralRewardS; 
+                                monthLog.details.push(`<span class="text-emerald-600">معرفی عضو</span>`); 
+                                break;
                             case 'donation': 
-                                let pts = Math.floor(amt / activeRules.donationDivisor) * activeRules.donationReward; ghatreh += pts; shabnam += pts; 
-                                globalEventsByMonth[m].donations += amt; monthLog.details.push(`<span class="text-emerald-600">کمک بلاعوض فردی</span>`); break;
-                            case 'marriage': shabnam += activeRules.marriageReward; monthLog.details.push(`<span class="text-pink-600">هدیه ازدواج</span>`); break;
+                                let pts = Math.floor(amt / activeRules.donationDivisor);
+                                ghatreh += pts * activeRules.donationRewardG; 
+                                shabnam += pts * activeRules.donationRewardS; 
+                                globalEventsByMonth[m].donations += amt; 
+                                monthLog.details.push(`<span class="text-emerald-600">کمک بلاعوض فردی</span>`); 
+                                break;
+                            case 'marriage': 
+                                shabnam += activeRules.marriageReward; 
+                                monthLog.details.push(`<span class="text-pink-600">هدیه ازدواج</span>`); 
+                                break;
                         }
                     });
 
@@ -876,17 +960,24 @@
 
                     if (!activeDelayPenalty && !isClosed) {
                         let effectiveBal = balance - blockedBalance;
-                        let balReward = Math.floor(Math.max(0, effectiveBal) / activeBaseUnit) * activeRules.minBalReward;
-                        ghatreh += balReward; shabnam += balReward;
+                        let balRewardG = Math.floor(Math.max(0, effectiveBal) / activeBaseUnit) * activeRules.minBalRewardG;
+                        let balRewardS = Math.floor(Math.max(0, effectiveBal) / activeBaseUnit) * activeRules.minBalRewardS;
+                        ghatreh += balRewardG; shabnam += balRewardS;
 
                         if (isSuspended) {
                             monthLog.details.push(`<span class="text-orange-600 text-[10px] font-bold"><i class="fa-solid fa-lock"></i> حساب معلق است</span>`);
                         } else {
                             if (!missedFeeThisMonth) {
-                                ghatreh += (30 * activeRules.dailyReward); shabnam += (30 * activeRules.dailyReward);
-                                monthLog.details.push(`<span class="text-stone-500 text-[10px]">رسوب: +${balReward} | استمرار: +${30 * activeRules.dailyReward}</span>`);
-                                if (currentOngoingDay < 3) { let e = 3 - currentOngoingDay; ghatreh += e*activeRules.earlyReward; shabnam += e*activeRules.earlyReward; }
-                                else if (currentOngoingDay > 7) { let l = currentOngoingDay - 7; ghatreh -= l*activeRules.latePenalty; shabnam -= l*activeRules.latePenalty; }
+                                ghatreh += (30 * activeRules.dailyRewardG); shabnam += (30 * activeRules.dailyRewardS);
+                                monthLog.details.push(`<span class="text-stone-500 text-[10px]">رسوب: قطره +${balRewardG} شبنم +${balRewardS} | استمرار: قطره +${30 * activeRules.dailyRewardG} شبنم +${30 * activeRules.dailyRewardS}</span>`);
+                                if (currentOngoingDay < 3) { 
+                                    let e = 3 - currentOngoingDay; 
+                                    ghatreh += e*activeRules.earlyRewardG; shabnam += e*activeRules.earlyRewardS; 
+                                }
+                                else if (currentOngoingDay > 7) { 
+                                    let l = currentOngoingDay - 7; 
+                                    ghatreh -= l*activeRules.latePenaltyG; shabnam -= l*activeRules.latePenaltyS; 
+                                }
                             }
                         }
                     }
@@ -926,7 +1017,6 @@
             
             for(let m=1; m<=simMonths; m++) {
                 let mExtDonations = (state.fundDonations || []).filter(e => e.month == m).reduce((s, e) => s + (parseInt(e.amount)||0), 0);
-                // Equity grows by donations + collected fees
                 runningEquity += mExtDonations + globalEventsByMonth[m].fees;
 
                 let mInflow = globalEventsByMonth[m].deposits + globalEventsByMonth[m].donations + globalEventsByMonth[m].loanRepayments + mExtDonations;
@@ -943,7 +1033,6 @@
             state.globalFund.loansIssued = gLoansActive; 
             state.globalFund.totalEquity = runningEquity;
 
-            // Compute Member Deposits strictly
             let lastM = state.config.months;
             state.globalFund.totalMemberDeposits = state.globalFund.assetsFlow[lastM] - state.globalFund.totalEquity;
 
@@ -1077,7 +1166,7 @@
             updateLevelsSummary();
             populateUserDropdown();
             
-            if(!document.getElementById('view-analytics').classList.contains('hidden') && document.getElementById('userSelectDropdown').value !== "") {
+            if(!document.getElementById('view-analytics').classList.contains('hidden') && selectedUserIdForAnalytics !== null) {
                 loadIndividualAnalytics();
             }
         }
@@ -1139,15 +1228,27 @@
             
             const paramDefs = [
                 { title: 'فرمول اختصاصی وام‌دهی', keys: [ {k: 'baseUnit', l: 'واحد پایه مالی اولیه (تومان)'}, {k: 'loanShabnamMultiplier', l: 'ضریب مصرف شبنم در اقساط'}, {k: 'loanGhatrehPenalty', l: 'کسر ثابت قطره بابت دریافت وام'}, {k: 'loanFeePercent', l: 'درصد کارمزد وام (اضافه به دارایی)'} ]},
-                { title: 'امتیازات روزانه و رسوب', keys: [ {k: 'dailyReward', l: 'امتیاز حضور روزانه'}, {k: 'minBalReward', l: 'امتیاز رسوب موجودی (به ازای هر واحد)'} ]},
-                { title: 'جرایم و پاداش انضباط', keys: [ {k: 'earlyReward', l: 'پاداش تعجیل شهریه (امتیاز/روز)'}, {k: 'latePenalty', l: 'جریمه تاخیر شهریه (امتیاز/روز)'}, {k: 'delayGhatrehPenalty', l: 'جریمه قطره معوقه اقساط (هر واحد/روز)'}, {k: 'delayShabnamPenalty', l: 'جریمه شبنم معوقه اقساط (هر واحد/روز)'} ]},
-                { title: 'برداشت و مسدودی', keys: [ {k: 'withdrawShabnamPenalty', l: 'کسر شبنم برداشت (هر واحد)'}, {k: 'withdrawGhatrehPenalty_yr1', l: 'کسر قطره برداشت - سال اول'}, {k: 'withdrawGhatrehPenalty_yr2_5', l: 'کسر قطره برداشت - سال 2 تا 5'}, {k: 'withdrawGhatrehPenalty_yr6_plus', l: 'کسر قطره برداشت - سال 6 به بعد'} ]}
+                { title: 'پاداش حضور و رسوب', keys: [
+                    {k: 'dailyRewardG', l: 'حضور روزانه (قطره)'}, {k: 'dailyRewardS', l: 'حضور روزانه (شبنم)'},
+                    {k: 'minBalRewardG', l: 'رسوب هر واحد (قطره)'}, {k: 'minBalRewardS', l: 'رسوب هر واحد (شبنم)'}
+                ]},
+                { title: 'جرایم و پاداش انضباط', keys: [
+                    {k: 'earlyRewardG', l: 'پاداش تعجیل روزانه (قطره)'}, {k: 'earlyRewardS', l: 'پاداش تعجیل روزانه (شبنم)'},
+                    {k: 'latePenaltyG', l: 'جریمه تاخیر روزانه (قطره)'}, {k: 'latePenaltyS', l: 'جریمه تاخیر روزانه (شبنم)'},
+                    {k: 'delayGhatrehPenalty', l: 'معوقه اقساط روزانه (قطره)'}, {k: 'delayShabnamPenalty', l: 'معوقه اقساط روزانه (شبنم)'}
+                ]},
+                { title: 'برداشت و سایر پارامترها', keys: [
+                    {k: 'referralRewardG', l: 'معرفی عضو (قطره)'}, {k: 'referralRewardS', l: 'معرفی عضو (شبنم)'},
+                    {k: 'donationRewardG', l: 'کمک بلاعوض (قطره)'}, {k: 'donationRewardS', l: 'کمک بلاعوض (شبنم)'},
+                    {k: 'withdrawShabnamPenalty', l: 'برداشت هر واحد (شبنم)'}, {k: 'withdrawGhatrehPenalty_yr1', l: 'برداشت واحد قطره (سال اول)'},
+                    {k: 'withdrawGhatrehPenalty_yr2_5', l: 'برداشت قطره (سال 2-5)'}, {k: 'withdrawGhatrehPenalty_yr6_plus', l: 'برداشت قطره (سال 6+)'}
+                ]}
             ];
 
             let html = '';
             paramDefs.forEach(group => {
                 let inputs = group.keys.map(item => `
-                    <div class="param-group"><label class="text-[10px] md:text-xs">${item.l}</label><input type="number" class="text-sm" id="param_${item.k}" value="${state.rules[item.k] !== undefined ? state.rules[item.k] : ''}" step="any"></div>
+                    <div class="param-group"><label class="text-[9px] md:text-[10px]">${item.l}</label><input type="number" class="text-sm" id="param_${item.k}" value="${state.rules[item.k] !== undefined ? state.rules[item.k] : ''}" step="any"></div>
                 `).join('');
                 html += `<div class="bg-white p-4 md:p-5 rounded-2xl border border-stone-200 shadow-sm"><h3 class="text-xs md:text-sm font-black text-stone-800 mb-4 border-b border-stone-100 pb-2">${group.title}</h3><div class="grid grid-cols-2 gap-3 md:gap-4">${inputs}</div></div>`;
             });
@@ -1238,14 +1339,14 @@
 
         // ---------------- STREAMING_CHUNK:Rendering Individuals Analytics... ----------------
         function loadIndividualAnalytics() {
-            const select = document.getElementById('userSelectDropdown');
+            if(selectedUserIdForAnalytics === null) return;
+            
             const emptyState = document.getElementById('indEmptyState');
             const grid = document.getElementById('indDashboardGrid');
             
-            if(!select.value) { emptyState.classList.remove('hidden'); grid.classList.add('hidden'); grid.classList.remove('grid'); return; }
             emptyState.classList.add('hidden'); grid.classList.remove('hidden'); grid.classList.add('grid');
 
-            const m = state.members[parseInt(select.value)];
+            const m = state.members[selectedUserIdForAnalytics];
             const h = m.history; if(!h) return;
             
             document.getElementById('indLvl').innerText = h.finalLevel.name;
@@ -1307,9 +1408,8 @@
         }
 
         function runReverseCalculator() {
-            const select = document.getElementById('userSelectDropdown');
-            if(!select.value) return;
-            const h = state.members[parseInt(select.value)].history; const r = state.rules;
+            if(selectedUserIdForAnalytics === null) return;
+            const h = state.members[selectedUserIdForAnalytics].history; const r = state.rules;
             const currBaseUnit = getCurrentBaseUnit();
             
             const targetAmt = parseInt(document.getElementById('calcTargetLoan').value) || 0;
@@ -1335,9 +1435,8 @@
         }
 
         function runForwardCalculator() {
-            const select = document.getElementById('userSelectDropdown');
-            if(!select.value) return;
-            const h = state.members[parseInt(select.value)].history; const r = state.rules;
+            if(selectedUserIdForAnalytics === null) return;
+            const h = state.members[selectedUserIdForAnalytics].history; const r = state.rules;
             const currBaseUnit = getCurrentBaseUnit();
             
             const targetMonths = parseInt(document.getElementById('calcForwardMonths').value) || 1;
@@ -1372,13 +1471,6 @@
                 type: 'bar', data: { labels: labels, datasets: [{ label: 'مجموع امتیازات', data: state.globalFund.pointsFlow, backgroundColor: '#0284c7', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: {font: {family: 'Vazirmatn'}, boxWidth: 10} } }, scales: {x:{ticks:{font:{size:9}}}, y:{ticks:{font:{size:9}}}} }
             });
-        }
-
-        function populateUserDropdown() {
-            const select = document.getElementById('userSelectDropdown'); const currentVal = select.value;
-            select.innerHTML = '<option value="" disabled selected>-- انتخاب عضو --</option>';
-            state.members.forEach((m, idx) => { select.appendChild(new Option(m.name, idx)); });
-            if(currentVal && select.querySelector(`option[value="${currentVal}"]`)) select.value = currentVal;
         }
 
         // ---------------- STREAMING_CHUNK:Members & Events rendering... ----------------
@@ -1496,7 +1588,26 @@
         window.onload = () => { 
             const savedState = localStorage.getItem('qanat_state');
             if(savedState) { 
-                try { state = JSON.parse(savedState); } catch(e) { console.error("Error parsing state"); }
+                try { 
+                    state = JSON.parse(savedState); 
+                    
+                    // Migration for splitted Ghatreh/Shabnam parameters if loaded from an old save
+                    if(state.rules.dailyRewardG === undefined) {
+                        state.rules.dailyRewardG = state.rules.dailyReward || 1;
+                        state.rules.dailyRewardS = state.rules.dailyReward || 1;
+                        state.rules.minBalRewardG = state.rules.minBalReward || 1;
+                        state.rules.minBalRewardS = state.rules.minBalReward || 1;
+                        state.rules.earlyRewardG = state.rules.earlyReward || 0.1;
+                        state.rules.earlyRewardS = state.rules.earlyReward || 0.1;
+                        state.rules.latePenaltyG = state.rules.latePenalty || 1;
+                        state.rules.latePenaltyS = state.rules.latePenalty || 1;
+                        state.rules.referralRewardG = state.rules.referralReward || 5;
+                        state.rules.referralRewardS = state.rules.referralReward || 5;
+                        state.rules.donationRewardG = state.rules.donationReward || 1;
+                        state.rules.donationRewardS = state.rules.donationReward || 1;
+                    }
+
+                } catch(e) { console.error("Error parsing state"); }
             }
             if(!state.inflation) state.inflation = [];
             if(state.rules.loanFeePercent === undefined) state.rules.loanFeePercent = 4;
