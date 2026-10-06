@@ -750,6 +750,28 @@
             }
         }
 
+        // ---------------- STREAMING_CHUNK:Apply Cloud State Helper... ----------------
+        function applyCloudState(cloudState) {
+            state = cloudState;
+            document.getElementById('globalSimMonths').value = state.config.months;
+            if(!state.inflation) state.inflation = [];
+            if(!state.fundDonations) state.fundDonations = [];
+            
+            // ذخیره در حافظه محلی بدون فراخوانی مجدد آپلود
+            localStorage.setItem('qanat_state', JSON.stringify(state));
+            
+            renderMembersTab();
+            runCoreSimulation();
+            
+            const indicator = document.getElementById('autoSaveIndicator');
+            if(indicator) {
+                indicator.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span class="hidden sm:inline">آپدیت زنده دریافت شد</span>';
+                indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-indigo-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-indigo-700 opacity-100";
+                setTimeout(() => indicator.classList.remove('opacity-100'), 4000);
+                setTimeout(() => indicator.classList.add('opacity-0'), 4000);
+            }
+        }
+
         async function autoLoadFromCloudBackground() {
             const client = getSupaClient();
             if(!client) return;
@@ -764,28 +786,36 @@
 
                 // اگر نسخه ابری جدیدتر از نسخه محلی است (برای جلوگیری از تداخل، اگر از جای دیگر آپدیت شده باشد)
                 if (cloudTime > localTime + 2000) {
-                    state = cloudState;
-                    document.getElementById('globalSimMonths').value = state.config.months;
-                    if(!state.inflation) state.inflation = [];
-                    if(!state.fundDonations) state.fundDonations = [];
-                    
-                    // ذخیره در حافظه محلی بدون فراخوانی مجدد آپلود
-                    localStorage.setItem('qanat_state', JSON.stringify(state));
-                    
-                    renderMembersTab();
-                    runCoreSimulation();
-                    
-                    const indicator = document.getElementById('autoSaveIndicator');
-                    if(indicator) {
-                        indicator.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span class="hidden sm:inline">آپدیت از دستگاه دیگر دریافت شد</span>';
-                        indicator.className = "text-[9px] md:text-[10px] font-bold transition-opacity duration-300 bg-indigo-50 px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 text-indigo-700 opacity-100";
-                        setTimeout(() => indicator.classList.remove('opacity-100'), 5000);
-                        setTimeout(() => indicator.classList.add('opacity-0'), 5000);
-                    }
+                    applyCloudState(cloudState);
                 }
             } catch(e) {
                 console.warn("Auto sync from cloud failed", e);
             }
+        }
+
+        // ---------------- STREAMING_CHUNK:Realtime WebSocket Sync... ----------------
+        function setupRealtimeSubscription() {
+            const client = getSupaClient();
+            if(!client) return;
+
+            // گوش دادن کاملا زنده به تغییرات دیتابیس (WebSockets)
+            client.channel('live-updates')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'qanat_db' },
+                (payload) => {
+                    if (payload.new && payload.new.id === 'main_save' && payload.new.data_json) {
+                        const cloudState = payload.new.data_json;
+                        const cloudTime = cloudState.lastModified || 0;
+                        const localTime = state.lastModified || 0;
+
+                        if (cloudTime > localTime + 2000) {
+                            applyCloudState(cloudState);
+                        }
+                    }
+                }
+            )
+            .subscribe();
         }
 
         async function saveToSupabase() {
@@ -1762,6 +1792,16 @@
 
             // فراخوانی خودکار از دیتابیس ابری در بدو ورود به نرم‌‌افزار
             autoLoadFromCloudBackground();
+            
+            // فعال‌سازی همگام‌سازی کاملا زنده (WebSockets)
+            setupRealtimeSubscription();
+
+            // یک چک‌کننده پس‌زمینه (برای اطمینان) که هر ۱۵ ثانیه اگر تب باز بود آپدیت‌ها را بگیرد
+            setInterval(() => {
+                if (document.visibilityState === "visible") {
+                    autoLoadFromCloudBackground();
+                }
+            }, 15000);
         };
     </script>
 </body>
