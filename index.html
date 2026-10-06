@@ -410,17 +410,18 @@
 
             <!-- Database View -->
             <div id="view-database" class="hidden animate-fade space-y-6">
+                <!-- GOOGLE SHEETS API IMPLEMENTATION (VPN FREE) -->
                 <div class="bg-gradient-to-r from-teal-600 to-teal-800 p-6 rounded-2xl shadow-lg border border-teal-500 text-white relative overflow-hidden flex-shrink-0">
-                    <i class="fa-brands fa-google absolute -right-4 -top-4 text-8xl opacity-10"></i>
-                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. همگام‌‌سازی ابری (Google Sheets)</h2>
-                    <p class="text-xs text-teal-100 mb-6 leading-relaxed relative z-10">اطلاعات شما با فشردن دکمه «ارسال» به صورت امن در فضای ابری اختصاصی شما ذخیره می‌شود. با زدن دکمه «دریافت» در هر دستگاهی، آخرین اطلاعات همگام‌‌سازی خواهد شد.</p>
+                    <i class="fa-solid fa-table absolute -right-4 -top-4 text-8xl opacity-10"></i>
+                    <h2 class="text-base md:text-lg font-black mb-2 relative z-10">۱. پایگاه‌داده ابری (Google Sheets API)</h2>
+                    <p class="text-xs text-teal-100 mb-6 leading-relaxed relative z-10">نرم‌افزار شما به هسته گوگل شیت متصل است. این روش در ایران بدون نیاز به فیلترشکن کار می‌کند. با فشردن دکمه «ارسال» اطلاعات شما به صورت امن در فضای ابری اختصاصی‌تان ذخیره می‌شود.</p>
                     
                     <div class="relative z-10 flex flex-col sm:flex-row gap-3">
-                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-teal-950 hover:bg-stone-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <button id="btnSaveGs" onclick="saveToGoogleSheets()" class="flex-1 sm:flex-none bg-teal-950 hover:bg-slate-900 text-white px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-cloud-arrow-up text-lg"></i> ارسال به فضای ابری
                         </button>
-                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 sm:flex-none bg-white hover:bg-stone-100 text-teal-800 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-down text-lg"></i> دریافت از فضای ابری
+                        <button id="btnLoadGs" onclick="loadFromGoogleSheets()" class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-teal-800 px-6 py-4 md:py-3 rounded-xl text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-down text-lg"></i> دریافت آخرین وضعیت
                         </button>
                     </div>
                 </div>
@@ -669,6 +670,7 @@
 
         function triggerAutoSave() {
             try {
+                // ذخیره آفلاین (در مرورگر) - فایربیس حذف شده است
                 localStorage.setItem('qanat_state', JSON.stringify(state));
                 const indicator = document.getElementById('autoSaveIndicator');
                 if(indicator) {
@@ -678,7 +680,7 @@
             } catch(e) { console.error("Auto-save failed"); }
         }
 
-        // ---------------- STREAMING_CHUNK:Google Sheets Sync Logic... ----------------
+        // ---------------- STREAMING_CHUNK:Google Sheets API Logic... ----------------
         const GSHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ-tBF4nF9HNewwwgP7lelS2nu6Ynnqpf6T2NEhUG7WB9NaVbxsiK21intWcK8pofo/exec";
 
         async function saveToGoogleSheets() {
@@ -686,15 +688,26 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال ارسال...';
             btn.disabled = true;
+
             try {
                 const response = await fetch(GSHEET_API_URL, {
-                    method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(state)
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(state)
                 });
+                
                 const result = await response.json();
-                if(result.status === 'success') showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-500');
-                else showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-rose-500');
-            } catch(e) { showDbMessage('ارتباط با سرور ابری برقرار نشد. (ممکن است نیاز به VPN باشد)', 'text-rose-500'); }
-            btn.innerHTML = originalText; btn.disabled = false;
+                if(result.status === 'success') {
+                    showDbMessage('<i class="fa-solid fa-cloud-check text-xl"></i> با موفقیت در فضای ابری ذخیره شد.', 'text-emerald-600');
+                } else {
+                    showDbMessage('خطا از سمت گوگل: ' + result.message, 'text-rose-600');
+                }
+            } catch(e) {
+                showDbMessage('ارتباط با سرور ابری برقرار نشد.', 'text-rose-600');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         async function loadFromGoogleSheets() {
@@ -702,17 +715,34 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i> در حال دریافت...';
             btn.disabled = true;
+
             try {
                 const response = await fetch(GSHEET_API_URL, { method: 'GET' });
                 const result = await response.json();
-                if(result.status === 'empty') { showDbMessage('فایل ابری شما خالی است. ابتدا اطلاعات را ارسال کنید.', 'text-amber-500');
+                
+                if(result.status === 'empty') {
+                    showDbMessage('فایل ابری شما خالی است. ابتدا اطلاعات را ارسال کنید.', 'text-amber-500');
                 } else if (result.config && result.members) {
-                    state = result; document.getElementById('globalSimMonths').value = state.config.months;
-                    triggerAutoSave(); renderMembersTab(); runCoreSimulation();
-                    showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-500');
-                } else showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-rose-500');
-            } catch(e) { showDbMessage('خطا در دریافت اطلاعات ابری.', 'text-rose-500'); }
-            btn.innerHTML = originalText; btn.disabled = false;
+                    state = result;
+                    document.getElementById('globalSimMonths').value = state.config.months;
+                    
+                    // بررسی و بازیابی متغیرهای ساختاری
+                    if(!state.inflation) state.inflation = [];
+                    if(!state.fundDonations) state.fundDonations = [];
+                    
+                    triggerAutoSave(); 
+                    renderMembersTab();
+                    runCoreSimulation();
+                    showDbMessage('<i class="fa-solid fa-check-double text-xl"></i> اطلاعات از فضای ابری دریافت و جایگزین شد.', 'text-emerald-600');
+                } else {
+                    showDbMessage('اطلاعات دریافتی نامعتبر است!', 'text-rose-600');
+                }
+            } catch(e) {
+                showDbMessage('خطا در دریافت اطلاعات ابری.', 'text-rose-600');
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         // ---------------- STREAMING_CHUNK:Searchable Dropdown Logic... ----------------
